@@ -1,3 +1,7 @@
 framework:
   github: sunrise-php/http-router
   version: 2.7
+
+  engines:
+    - php-fpm
+    - road-runner

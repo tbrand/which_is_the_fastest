@@ -1,3 +1,21 @@
 framework:
   website: lumen.laravel.com
   version: 8.2
+
+  engines:
+    - php-fpm
+    - swoole
+
+  files:
+    - .swoole/config/laravels.php
+    - .swoole/bin/laravels
+    - .swoole/artisan
+
+language:
+  engines:
+    swoole:
+      modules:
+        - pcntl
+      bootstrap:
+        - mkdir storage
+      command: php bin/laravels start

@@ -2,7 +2,5 @@ framework:
   github: swoole/swoole-src
   version: 4.6
 
-php_ext:
-  - swoole
-
-command: php start.php
+  engines:
+    - swoole

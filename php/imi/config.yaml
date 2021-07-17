@@ -2,8 +2,10 @@ framework:
   website: imiphp.com
   version: 1.3
 
-php_ext:
-  - swoole
-  - redis
+  extensions:
+    - redis
 
-command: php vendor/bin/imi server/start
+  engines:
+    - swoole
+
+  command: php vendor/bin/imi server/start

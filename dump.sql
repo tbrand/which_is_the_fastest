@@ -66,6 +66,14 @@ ALTER TABLE public.concurrencies_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.concurrencies_id_seq OWNED BY public.concurrencies.id;
 
+--
+-- Name: engines; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.engines (
+    id SERIAL PRIMARY KEY,
+    label character varying UNIQUE
+);
 
 --
 -- Name: frameworks; Type: TABLE; Schema: public; Owner: postgres
@@ -174,7 +182,8 @@ ALTER SEQUENCE public.languages_id_seq OWNED BY public.languages.id;
 CREATE TABLE public.metrics (
     framework_id bigint,
     value_id bigint,
-    concurrency_id bigint
+    concurrency_id bigint,
+    engine_id bigint
 );
 
 
@@ -231,7 +240,8 @@ ALTER SEQUENCE public.values_id_seq OWNED BY public."values".id;
 
 CREATE TABLE public.writable (
     language_id bigint,
-    framework_id bigint
+    framework_id bigint,
+    engine_id bigint
 );
 
 
@@ -492,6 +502,7 @@ CREATE INDEX index_metrics_on_framework_id ON public.metrics USING btree (framew
 --
 
 CREATE INDEX index_metrics_on_value_id ON public.metrics USING btree (value_id);
+CREATE INDEX index_metrics_on_engine_id ON public.metrics USING btree (engine_id);
 
 
 --

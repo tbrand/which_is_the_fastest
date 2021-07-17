@@ -2,7 +2,7 @@ framework:
   github: gotzmann/comet
   version: 2.0
 
-php_mod:
-  - pcntl
+  engines:
+    - workerman
 
-command: php start.php start
+  command: php start.php start

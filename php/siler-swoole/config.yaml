@@ -1,8 +1,0 @@
-framework:
-  website: siler.leocavalcante.dev
-  version: 1.7
-
-php_ext:
-  - swoole
-
-command: php public/index.php

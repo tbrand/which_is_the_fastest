@@ -121,7 +121,7 @@ php:
     - fenric
   sunrise-router-annotations:
     - fenric
-  sunrise-router-roadrunner
+  sunrise-router-roadrunner:
     - fenric
 fsharp:
   saturn:

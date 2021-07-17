@@ -1,3 +1,7 @@
 framework:
   website: siler.leocavalcante.dev
   version: 1.7
+
+  engines:
+    - php-fpm
+    - swoole

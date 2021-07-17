@@ -415,11 +415,17 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
     - name: beetlex
+=======
+    - name: tango
+>>>>>>> upstream/master
       commands:
-      - cd csharp/beetlex && make build  -f .Makefile  && cd -
-      - FRAMEWORK=csharp/beetlex bundle exec rspec .spec
-      - make  -f csharp/beetlex/.Makefile collect
+      - cd go/tango && make build  -f .Makefile  && cd -
+      - FRAMEWORK=go/tango bundle exec rspec .spec
+      - make  -f go/tango/.Makefile collect
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -430,7 +436,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
     - name: carter
+=======
+    - name: tango
+>>>>>>> 07784711 (reduce PR size)
+      commands:
+      - cd go/tango && make build  -f .Makefile  && cd -
+      - FRAMEWORK=go/tango bundle exec rspec .spec
+      - make  -f go/tango/.Makefile collect
+=======
+    - name: httprouter
+      commands:
+      - cd go/httprouter && make build  -f .Makefile  && cd -
+      - FRAMEWORK=go/httprouter bundle exec rspec .spec
+      - make  -f go/httprouter/.Makefile collect
+>>>>>>> upstream/master
+=======
+    - name: beetlex
+      commands:
+      - cd csharp/beetlex && make build  -f .Makefile  && cd -
+      - FRAMEWORK=csharp/beetlex bundle exec rspec .spec
+      - make  -f csharp/beetlex/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: httprouter
+=======
+    - name: carter
+>>>>>>> upstream/master
       commands:
       - cd csharp/carter && make build  -f .Makefile  && cd -
       - FRAMEWORK=csharp/carter bundle exec rspec .spec
@@ -447,9 +491,42 @@ blocks:
         value: GET:/
     - name: simplify.web
       commands:
+<<<<<<< HEAD
+<<<<<<< HEAD
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: start
+      commands:
+      - cd dart/start && make build  -f .Makefile  && cd -
+      - FRAMEWORK=dart/start bundle exec rspec .spec
+      - make  -f dart/start/.Makefile collect
+=======
+      - cd go/gf && make build  -f .Makefile  && cd -
+      - FRAMEWORK=go/gf bundle exec rspec .spec
+      - make  -f go/gf/.Makefile collect
+>>>>>>> 07784711 (reduce PR size)
+=======
+    - name: gf
+      commands:
+      - cd go/gf && make build  -f .Makefile  && cd -
+      - FRAMEWORK=go/gf bundle exec rspec .spec
+      - make  -f go/gf/.Makefile collect
+>>>>>>> upstream/master
+=======
       - cd csharp/simplify.web && make build  -f .Makefile  && cd -
       - FRAMEWORK=csharp/simplify.web bundle exec rspec .spec
       - make  -f csharp/simplify.web/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -712,11 +789,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: aqueduct
+      commands:
+      - cd dart/aqueduct && make build  -f .Makefile  && cd -
+      - FRAMEWORK=dart/aqueduct bundle exec rspec .spec
+      - make  -f dart/aqueduct/.Makefile collect
+=======
+- name: haskell
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: servant
+      commands:
+      - cd haskell/servant && make build  -f .Makefile  && cd -
+      - FRAMEWORK=haskell/servant bundle exec rspec .spec
+      - make  -f haskell/servant/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: air
       commands:
       - cd go/air && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/air bundle exec rspec .spec
       - make  -f go/air/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -727,11 +838,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: haskell
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: servant
+      commands:
+      - cd haskell/servant && make build  -f .Makefile  && cd -
+      - FRAMEWORK=haskell/servant bundle exec rspec .spec
+      - make  -f haskell/servant/.Makefile collect
+=======
+    - name: scotty
+      commands:
+      - cd haskell/scotty && make build  -f .Makefile  && cd -
+      - FRAMEWORK=haskell/scotty bundle exec rspec .spec
+      - make  -f haskell/scotty/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: atreugo
       commands:
       - cd go/atreugo && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/atreugo bundle exec rspec .spec
       - make  -f go/atreugo/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -742,11 +887,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: scotty
+      commands:
+      - cd haskell/scotty && make build  -f .Makefile  && cd -
+      - FRAMEWORK=haskell/scotty bundle exec rspec .spec
+      - make  -f haskell/scotty/.Makefile collect
+=======
+- name: pony
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: jennet
+      commands:
+      - cd pony/jennet && make build  -f .Makefile  && cd -
+      - FRAMEWORK=pony/jennet bundle exec rspec .spec
+      - make  -f pony/jennet/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: beego
       commands:
       - cd go/beego && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/beego bundle exec rspec .spec
       - make  -f go/beego/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -757,11 +936,49 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: pony
+=======
+- name: clojure
+>>>>>>> upstream/master
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+<<<<<<< HEAD
+    - name: jennet
+      commands:
+      - cd pony/jennet && make build  -f .Makefile  && cd -
+      - FRAMEWORK=pony/jennet bundle exec rspec .spec
+      - make  -f pony/jennet/.Makefile collect
+=======
+    - name: yada
+      commands:
+      - cd clojure/yada && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/yada bundle exec rspec .spec
+      - make  -f clojure/yada/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: chi
       commands:
       - cd go/chi && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/chi bundle exec rspec .spec
       - make  -f go/chi/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -772,11 +989,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: clojure
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: yada
+      commands:
+      - cd clojure/yada && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/yada bundle exec rspec .spec
+      - make  -f clojure/yada/.Makefile collect
+=======
+    - name: donkey
+      commands:
+      - cd clojure/donkey && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/donkey bundle exec rspec .spec
+      - make  -f clojure/donkey/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: clevergo
       commands:
       - cd go/clevergo && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/clevergo bundle exec rspec .spec
       - make  -f go/clevergo/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -787,11 +1038,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: donkey
+      commands:
+      - cd clojure/donkey && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/donkey bundle exec rspec .spec
+      - make  -f clojure/donkey/.Makefile collect
+=======
+    - name: coast
+      commands:
+      - cd clojure/coast && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/coast bundle exec rspec .spec
+      - make  -f clojure/coast/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: echo
       commands:
       - cd go/echo && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/echo bundle exec rspec .spec
       - make  -f go/echo/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -802,11 +1069,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: coast
+      commands:
+      - cd clojure/coast && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/coast bundle exec rspec .spec
+      - make  -f clojure/coast/.Makefile collect
+=======
+    - name: luminus
+      commands:
+      - cd clojure/luminus && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/luminus bundle exec rspec .spec
+      - make  -f clojure/luminus/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: fasthttp
       commands:
       - cd go/fasthttp && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/fasthttp bundle exec rspec .spec
       - make  -f go/fasthttp/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -817,11 +1100,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: luminus
+      commands:
+      - cd clojure/luminus && make build  -f .Makefile  && cd -
+      - FRAMEWORK=clojure/luminus bundle exec rspec .spec
+      - make  -f clojure/luminus/.Makefile collect
+=======
+- name: python
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: bottle
+      commands:
+      - cd python/bottle && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/bottle bundle exec rspec .spec
+      - make  -f python/bottle/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: fiber
       commands:
       - cd go/fiber && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/fiber bundle exec rspec .spec
       - make  -f go/fiber/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -832,11 +1149,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: python
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: bottle
+      commands:
+      - cd python/bottle && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/bottle bundle exec rspec .spec
+      - make  -f python/bottle/.Makefile collect
+=======
+    - name: aiohttp
+      commands:
+      - cd python/aiohttp && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/aiohttp bundle exec rspec .spec
+      - make  -f python/aiohttp/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gearbox
       commands:
       - cd go/gearbox && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gearbox bundle exec rspec .spec
       - make  -f go/gearbox/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -847,11 +1198,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: aiohttp
+      commands:
+      - cd python/aiohttp && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/aiohttp bundle exec rspec .spec
+      - make  -f python/aiohttp/.Makefile collect
+=======
+    - name: responder
+      commands:
+      - cd python/responder && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/responder bundle exec rspec .spec
+      - make  -f python/responder/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gf
       commands:
       - cd go/gf && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gf bundle exec rspec .spec
       - make  -f go/gf/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -862,11 +1229,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: responder
+      commands:
+      - cd python/responder && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/responder bundle exec rspec .spec
+      - make  -f python/responder/.Makefile collect
+=======
+    - name: asgineer
+      commands:
+      - cd python/asgineer && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/asgineer bundle exec rspec .spec
+      - make  -f python/asgineer/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gin
       commands:
       - cd go/gin && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gin bundle exec rspec .spec
       - make  -f go/gin/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -877,11 +1260,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: asgineer
+      commands:
+      - cd python/asgineer && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/asgineer bundle exec rspec .spec
+      - make  -f python/asgineer/.Makefile collect
+=======
+    - name: klein
+      commands:
+      - cd python/klein && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/klein bundle exec rspec .spec
+      - make  -f python/klein/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gorilla-mux
       commands:
       - cd go/gorilla-mux && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gorilla-mux bundle exec rspec .spec
       - make  -f go/gorilla-mux/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -892,11 +1291,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: klein
+      commands:
+      - cd python/klein && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/klein bundle exec rspec .spec
+      - make  -f python/klein/.Makefile collect
+=======
+    - name: django
+      commands:
+      - cd python/django && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/django bundle exec rspec .spec
+      - make  -f python/django/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: goroute
       commands:
       - cd go/goroute && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/goroute bundle exec rspec .spec
       - make  -f go/goroute/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -907,11 +1322,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: django
+      commands:
+      - cd python/django && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/django bundle exec rspec .spec
+      - make  -f python/django/.Makefile collect
+=======
+    - name: flask
+      commands:
+      - cd python/flask && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/flask bundle exec rspec .spec
+      - make  -f python/flask/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gorouter
       commands:
       - cd go/gorouter && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gorouter bundle exec rspec .spec
       - make  -f go/gorouter/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -922,11 +1353,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: flask
+      commands:
+      - cd python/flask && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/flask bundle exec rspec .spec
+      - make  -f python/flask/.Makefile collect
+=======
+    - name: cherrypy
+      commands:
+      - cd python/cherrypy && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/cherrypy bundle exec rspec .spec
+      - make  -f python/cherrypy/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gorouter-fasthttp
       commands:
       - cd go/gorouter-fasthttp && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gorouter-fasthttp bundle exec rspec .spec
       - make  -f go/gorouter-fasthttp/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -937,11 +1384,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: cherrypy
+      commands:
+      - cd python/cherrypy && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/cherrypy bundle exec rspec .spec
+      - make  -f python/cherrypy/.Makefile collect
+=======
+    - name: apidaora
+      commands:
+      - cd python/apidaora && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/apidaora bundle exec rspec .spec
+      - make  -f python/apidaora/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: goyave
       commands:
       - cd go/goyave && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/goyave bundle exec rspec .spec
       - make  -f go/goyave/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -952,11 +1415,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: apidaora
+      commands:
+      - cd python/apidaora && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/apidaora bundle exec rspec .spec
+      - make  -f python/apidaora/.Makefile collect
+=======
+    - name: blacksheep
+      commands:
+      - cd python/blacksheep && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/blacksheep bundle exec rspec .spec
+      - make  -f python/blacksheep/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: gramework
       commands:
       - cd go/gramework && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/gramework bundle exec rspec .spec
       - make  -f go/gramework/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -967,11 +1446,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: blacksheep
+      commands:
+      - cd python/blacksheep && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/blacksheep bundle exec rspec .spec
+      - make  -f python/blacksheep/.Makefile collect
+=======
+    - name: hug
+      commands:
+      - cd python/hug && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/hug bundle exec rspec .spec
+      - make  -f python/hug/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: httprouter
       commands:
       - cd go/httprouter && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/httprouter bundle exec rspec .spec
       - make  -f go/httprouter/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -982,11 +1477,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: hug
+      commands:
+      - cd python/hug && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/hug bundle exec rspec .spec
+      - make  -f python/hug/.Makefile collect
+=======
+    - name: baize-wsgi
+      commands:
+      - cd python/baize-wsgi && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/baize-wsgi bundle exec rspec .spec
+      - make  -f python/baize-wsgi/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: kami
       commands:
       - cd go/kami && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/kami bundle exec rspec .spec
       - make  -f go/kami/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -997,11 +1508,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: baize-wsgi
+      commands:
+      - cd python/baize-wsgi && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/baize-wsgi bundle exec rspec .spec
+      - make  -f python/baize-wsgi/.Makefile collect
+=======
+    - name: index.py
+      commands:
+      - cd python/index.py && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/index.py bundle exec rspec .spec
+      - make  -f python/index.py/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: macaron
       commands:
       - cd go/macaron && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/macaron bundle exec rspec .spec
       - make  -f go/macaron/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1012,11 +1539,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: index.py
+      commands:
+      - cd python/index.py && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/index.py bundle exec rspec .spec
+      - make  -f python/index.py/.Makefile collect
+=======
+    - name: quart
+      commands:
+      - cd python/quart && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/quart bundle exec rspec .spec
+      - make  -f python/quart/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: mars
       commands:
       - cd go/mars && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/mars bundle exec rspec .spec
       - make  -f go/mars/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1027,11 +1570,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: quart
+      commands:
+      - cd python/quart && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/quart bundle exec rspec .spec
+      - make  -f python/quart/.Makefile collect
+=======
+    - name: falcon
+      commands:
+      - cd python/falcon && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/falcon bundle exec rspec .spec
+      - make  -f python/falcon/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: router
       commands:
       - cd go/router && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/router bundle exec rspec .spec
       - make  -f go/router/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1042,11 +1601,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: falcon
+      commands:
+      - cd python/falcon && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/falcon bundle exec rspec .spec
+      - make  -f python/falcon/.Makefile collect
+=======
+    - name: clastic
+      commands:
+      - cd python/clastic && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/clastic bundle exec rspec .spec
+      - make  -f python/clastic/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: rte
       commands:
       - cd go/rte && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/rte bundle exec rspec .spec
       - make  -f go/rte/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1057,11 +1632,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: clastic
+      commands:
+      - cd python/clastic && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/clastic bundle exec rspec .spec
+      - make  -f python/clastic/.Makefile collect
+=======
+    - name: cyclone
+      commands:
+      - cd python/cyclone && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/cyclone bundle exec rspec .spec
+      - make  -f python/cyclone/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: tango
       commands:
       - cd go/tango && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/tango bundle exec rspec .spec
       - make  -f go/tango/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1072,11 +1663,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: cyclone
+      commands:
+      - cd python/cyclone && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/cyclone bundle exec rspec .spec
+      - make  -f python/cyclone/.Makefile collect
+=======
+    - name: tonberry
+      commands:
+      - cd python/tonberry && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/tonberry bundle exec rspec .spec
+      - make  -f python/tonberry/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: violetear
       commands:
       - cd go/violetear && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/violetear bundle exec rspec .spec
       - make  -f go/violetear/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1087,11 +1694,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: tonberry
+      commands:
+      - cd python/tonberry && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/tonberry bundle exec rspec .spec
+      - make  -f python/tonberry/.Makefile collect
+=======
+    - name: starlette
+      commands:
+      - cd python/starlette && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/starlette bundle exec rspec .spec
+      - make  -f python/starlette/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: webgo
       commands:
       - cd go/webgo && make build  -f .Makefile  && cd -
       - FRAMEWORK=go/webgo bundle exec rspec .spec
       - make  -f go/webgo/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1102,6 +1725,21 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: starlette
+      commands:
+      - cd python/starlette && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/starlette bundle exec rspec .spec
+      - make  -f python/starlette/.Makefile collect
+=======
+    - name: baize-asgi
+      commands:
+      - cd python/baize-asgi && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/baize-asgi bundle exec rspec .spec
+      - make  -f python/baize-asgi/.Makefile collect
+>>>>>>> upstream/master
+=======
 - name: haskell
   dependencies:
   - setup
@@ -1125,6 +1763,7 @@ blocks:
       - cd haskell/scotty && make build  -f .Makefile  && cd -
       - FRAMEWORK=haskell/scotty bundle exec rspec .spec
       - make  -f haskell/scotty/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1135,11 +1774,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: baize-asgi
+      commands:
+      - cd python/baize-asgi && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/baize-asgi bundle exec rspec .spec
+      - make  -f python/baize-asgi/.Makefile collect
+=======
+    - name: nameko
+      commands:
+      - cd python/nameko && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/nameko bundle exec rspec .spec
+      - make  -f python/nameko/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: servant
       commands:
       - cd haskell/servant && make build  -f .Makefile  && cd -
       - FRAMEWORK=haskell/servant bundle exec rspec .spec
       - make  -f haskell/servant/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1150,6 +1805,21 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: nameko
+      commands:
+      - cd python/nameko && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/nameko bundle exec rspec .spec
+      - make  -f python/nameko/.Makefile collect
+=======
+    - name: molten
+      commands:
+      - cd python/molten && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/molten bundle exec rspec .spec
+      - make  -f python/molten/.Makefile collect
+>>>>>>> upstream/master
+=======
 - name: java
   dependencies:
   - setup
@@ -1173,6 +1843,7 @@ blocks:
       - cd java/act && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/act bundle exec rspec .spec
       - make  -f java/act/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1183,11 +1854,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: molten
+      commands:
+      - cd python/molten && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/molten bundle exec rspec .spec
+      - make  -f python/molten/.Makefile collect
+=======
+    - name: tornado
+      commands:
+      - cd python/tornado && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/tornado bundle exec rspec .spec
+      - make  -f python/tornado/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: activej
       commands:
       - cd java/activej && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/activej bundle exec rspec .spec
       - make  -f java/activej/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1198,11 +1885,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: tornado
+      commands:
+      - cd python/tornado && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/tornado bundle exec rspec .spec
+      - make  -f python/tornado/.Makefile collect
+=======
+    - name: fastapi
+      commands:
+      - cd python/fastapi && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/fastapi bundle exec rspec .spec
+      - make  -f python/fastapi/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: blade
       commands:
       - cd java/blade && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/blade bundle exec rspec .spec
       - make  -f java/blade/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1213,11 +1916,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: fastapi
+      commands:
+      - cd python/fastapi && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/fastapi bundle exec rspec .spec
+      - make  -f python/fastapi/.Makefile collect
+=======
+    - name: django-ninja
+      commands:
+      - cd python/django-ninja && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/django-ninja bundle exec rspec .spec
+      - make  -f python/django-ninja/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: javalin
       commands:
       - cd java/javalin && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/javalin bundle exec rspec .spec
       - make  -f java/javalin/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1228,11 +1947,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: django-ninja
+      commands:
+      - cd python/django-ninja && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/django-ninja bundle exec rspec .spec
+      - make  -f python/django-ninja/.Makefile collect
+=======
+    - name: masonite
+      commands:
+      - cd python/masonite && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/masonite bundle exec rspec .spec
+      - make  -f python/masonite/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: jersey-grizzly2
       commands:
       - cd java/jersey-grizzly2 && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/jersey-grizzly2 bundle exec rspec .spec
       - make  -f java/jersey-grizzly2/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1243,11 +1978,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: masonite
+      commands:
+      - cd python/masonite && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/masonite bundle exec rspec .spec
+      - make  -f python/masonite/.Makefile collect
+=======
+    - name: emmett
+      commands:
+      - cd python/emmett && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/emmett bundle exec rspec .spec
+      - make  -f python/emmett/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: jersey3-grizzly2
       commands:
       - cd java/jersey3-grizzly2 && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/jersey3-grizzly2 bundle exec rspec .spec
       - make  -f java/jersey3-grizzly2/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1258,11 +2009,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: emmett
+      commands:
+      - cd python/emmett && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/emmett bundle exec rspec .spec
+      - make  -f python/emmett/.Makefile collect
+=======
+    - name: pyramid
+      commands:
+      - cd python/pyramid && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/pyramid bundle exec rspec .spec
+      - make  -f python/pyramid/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: jooby
       commands:
       - cd java/jooby && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/jooby bundle exec rspec .spec
       - make  -f java/jooby/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1273,11 +2040,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: pyramid
+      commands:
+      - cd python/pyramid && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/pyramid bundle exec rspec .spec
+      - make  -f python/pyramid/.Makefile collect
+=======
+    - name: sanic
+      commands:
+      - cd python/sanic && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/sanic bundle exec rspec .spec
+      - make  -f python/sanic/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: light-4j
       commands:
       - cd java/light-4j && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/light-4j bundle exec rspec .spec
       - make  -f java/light-4j/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1288,11 +2071,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: sanic
+      commands:
+      - cd python/sanic && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/sanic bundle exec rspec .spec
+      - make  -f python/sanic/.Makefile collect
+=======
+    - name: guillotina
+      commands:
+      - cd python/guillotina && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/guillotina bundle exec rspec .spec
+      - make  -f python/guillotina/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: micronaut
       commands:
       - cd java/micronaut && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/micronaut bundle exec rspec .spec
       - make  -f java/micronaut/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1303,11 +2102,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: guillotina
+      commands:
+      - cd python/guillotina && make build  -f .Makefile  && cd -
+      - FRAMEWORK=python/guillotina bundle exec rspec .spec
+      - make  -f python/guillotina/.Makefile collect
+=======
+- name: rust
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: actix
+      commands:
+      - cd rust/actix && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/actix bundle exec rspec .spec
+      - make  -f rust/actix/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: quarkus
       commands:
       - cd java/quarkus && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/quarkus bundle exec rspec .spec
       - make  -f java/quarkus/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1318,11 +2151,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: rust
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: actix
+      commands:
+      - cd rust/actix && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/actix bundle exec rspec .spec
+      - make  -f rust/actix/.Makefile collect
+=======
+    - name: salvo
+      commands:
+      - cd rust/salvo && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/salvo bundle exec rspec .spec
+      - make  -f rust/salvo/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: rapidoid
       commands:
       - cd java/rapidoid && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/rapidoid bundle exec rspec .spec
       - make  -f java/rapidoid/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1333,11 +2200,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: salvo
+      commands:
+      - cd rust/salvo && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/salvo bundle exec rspec .spec
+      - make  -f rust/salvo/.Makefile collect
+=======
+    - name: iron
+      commands:
+      - cd rust/iron && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/iron bundle exec rspec .spec
+      - make  -f rust/iron/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: restheart
       commands:
       - cd java/restheart && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/restheart bundle exec rspec .spec
       - make  -f java/restheart/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1348,11 +2231,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: iron
+      commands:
+      - cd rust/iron && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/iron bundle exec rspec .spec
+      - make  -f rust/iron/.Makefile collect
+=======
+    - name: gotham
+      commands:
+      - cd rust/gotham && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/gotham bundle exec rspec .spec
+      - make  -f rust/gotham/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: spark
       commands:
       - cd java/spark && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/spark bundle exec rspec .spec
       - make  -f java/spark/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1363,11 +2262,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: gotham
+      commands:
+      - cd rust/gotham && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/gotham bundle exec rspec .spec
+      - make  -f rust/gotham/.Makefile collect
+=======
+    - name: nickel
+      commands:
+      - cd rust/nickel && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/nickel bundle exec rspec .spec
+      - make  -f rust/nickel/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: spring
       commands:
       - cd java/spring && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/spring bundle exec rspec .spec
       - make  -f java/spring/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1378,11 +2293,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: nickel
+      commands:
+      - cd rust/nickel && make build  -f .Makefile  && cd -
+      - FRAMEWORK=rust/nickel bundle exec rspec .spec
+      - make  -f rust/nickel/.Makefile collect
+=======
+- name: csharp
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: beetlex
+      commands:
+      - cd csharp/beetlex && make build  -f .Makefile  && cd -
+      - FRAMEWORK=csharp/beetlex bundle exec rspec .spec
+      - make  -f csharp/beetlex/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: struts2
       commands:
       - cd java/struts2 && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/struts2 bundle exec rspec .spec
       - make  -f java/struts2/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1393,11 +2342,42 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: csharp
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: simplify.web
+      commands:
+=======
+    - name: simplify.web
+      commands:
+>>>>>>> upstream/master
+      - cd csharp/simplify.web && make build  -f .Makefile  && cd -
+      - FRAMEWORK=csharp/simplify.web bundle exec rspec .spec
+      - make  -f csharp/simplify.web/.Makefile collect
+=======
     - name: undertow
       commands:
       - cd java/undertow && make build  -f .Makefile  && cd -
       - FRAMEWORK=java/undertow bundle exec rspec .spec
       - make  -f java/undertow/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1623,9 +2603,11 @@ blocks:
         value: GET:/
     - name: moleculer
       commands:
-      - cd javascript/moleculer && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/moleculer bundle exec rspec .spec
-      - make  -f javascript/moleculer/.Makefile collect
+<<<<<<< HEAD
+      - cd java/restheart && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/restheart bundle exec rspec .spec
+      - make  -f java/restheart/.Makefile collect
+<<<<<<< HEAD
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1636,11 +2618,49 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+    - name: spring
+      commands:
+      - cd java/spring && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/spring bundle exec rspec .spec
+      - make  -f java/spring/.Makefile collect
+=======
+>>>>>>> upstream/master
+=======
+      - cd javascript/moleculer && make build  -f .Makefile  && cd -
+      - FRAMEWORK=javascript/moleculer bundle exec rspec .spec
+      - make  -f javascript/moleculer/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: quarkus
+      commands:
+      - cd java/quarkus && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/quarkus bundle exec rspec .spec
+      - make  -f java/quarkus/.Makefile collect
+=======
+    - name: spring
+      commands:
+      - cd java/spring && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/spring bundle exec rspec .spec
+      - make  -f java/spring/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: muneem
       commands:
       - cd javascript/muneem && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/muneem bundle exec rspec .spec
       - make  -f javascript/muneem/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1651,11 +2671,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: spark
+      commands:
+      - cd java/spark && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/spark bundle exec rspec .spec
+      - make  -f java/spark/.Makefile collect
+=======
+    - name: quarkus
+      commands:
+      - cd java/quarkus && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/quarkus bundle exec rspec .spec
+      - make  -f java/quarkus/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: nanoexpress
       commands:
       - cd javascript/nanoexpress && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/nanoexpress bundle exec rspec .spec
       - make  -f javascript/nanoexpress/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1666,11 +2702,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: vertx
+      commands:
+      - cd java/vertx && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/vertx bundle exec rspec .spec
+      - make  -f java/vertx/.Makefile collect
+=======
+    - name: spark
+      commands:
+      - cd java/spark && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/spark bundle exec rspec .spec
+      - make  -f java/spark/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: naturaljs-router
       commands:
       - cd javascript/naturaljs-router && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/naturaljs-router bundle exec rspec .spec
       - make  -f javascript/naturaljs-router/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1681,11 +2733,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: struts2
+      commands:
+      - cd java/struts2 && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/struts2 bundle exec rspec .spec
+      - make  -f java/struts2/.Makefile collect
+=======
+    - name: vertx
+      commands:
+      - cd java/vertx && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/vertx bundle exec rspec .spec
+      - make  -f java/vertx/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: nestjs-express
       commands:
       - cd javascript/nestjs-express && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/nestjs-express bundle exec rspec .spec
       - make  -f javascript/nestjs-express/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1696,7 +2764,18 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: polka
+=======
+    - name: micronaut
+      commands:
+=======
+    - name: struts2
+=======
     - name: nestjs-fastify
+>>>>>>> upstream/master
       commands:
       - cd javascript/nestjs-fastify && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/nestjs-fastify bundle exec rspec .spec
@@ -1713,9 +2792,16 @@ blocks:
         value: GET:/
     - name: polka
       commands:
+<<<<<<< HEAD
+>>>>>>> upstream/master
+      - cd java/micronaut && make build  -f .Makefile  && cd -
+      - FRAMEWORK=java/micronaut bundle exec rspec .spec
+      - make  -f java/micronaut/.Makefile collect
+=======
       - cd javascript/polka && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/polka bundle exec rspec .spec
       - make  -f javascript/polka/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -1726,7 +2812,19 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+- name: fsharp
+  dependencies:
+  - setup
+  task:
+    prologue:
+<<<<<<< HEAD
+>>>>>>> 07784711 (reduce PR size)
+=======
+>>>>>>> upstream/master
+=======
     - name: polkadot
+>>>>>>> upstream/master
       commands:
       - cd javascript/polkadot && make build  -f .Makefile  && cd -
       - FRAMEWORK=javascript/polkadot bundle exec rspec .spec
@@ -2851,7 +3949,32 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+    - name: athena
+<<<<<<< HEAD
+      commands:
+      - cd crystal/athena && make build  -f .Makefile  && cd -
+      - FRAMEWORK=crystal/athena bundle exec rspec .spec
+      - make  -f crystal/athena/.Makefile collect
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+    - name: shivneri
+      commands:
+      - cd crystal/shivneri && make build  -f .Makefile  && cd -
+      - FRAMEWORK=crystal/shivneri bundle exec rspec .spec
+      - make  -f crystal/shivneri/.Makefile collect
+=======
+=======
     - name: yii-swoole
+>>>>>>> upstream/master
       commands:
       - cd php/yii-swoole && make build  -f .Makefile  && cd -
       - FRAMEWORK=php/yii-swoole bundle exec rspec .spec
@@ -2919,9 +4042,16 @@ blocks:
     jobs:
     - name: aiohttp
       commands:
+<<<<<<< HEAD
+      - cd elixir/cowboy && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/cowboy bundle exec rspec .spec
+      - make  -f elixir/cowboy/.Makefile collect
+>>>>>>> upstream/master
+=======
       - cd python/aiohttp && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/aiohttp bundle exec rspec .spec
       - make  -f python/aiohttp/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -2932,11 +4062,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: spider-gazelle
+      commands:
+      - cd crystal/spider-gazelle && make build  -f .Makefile  && cd -
+      - FRAMEWORK=crystal/spider-gazelle bundle exec rspec .spec
+      - make  -f crystal/spider-gazelle/.Makefile collect
+=======
+    - name: cowboy_stream
+      commands:
+      - cd elixir/cowboy_stream && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/cowboy_stream bundle exec rspec .spec
+      - make  -f elixir/cowboy_stream/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: apidaora
       commands:
       - cd python/apidaora && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/apidaora bundle exec rspec .spec
       - make  -f python/apidaora/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -2947,7 +4093,29 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: elixir
+=======
+    - name: plug
+      commands:
+      - cd elixir/plug && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/plug bundle exec rspec .spec
+      - make  -f elixir/plug/.Makefile collect
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+    - name: phoenix
+=======
     - name: asgineer
+>>>>>>> upstream/master
       commands:
       - cd python/asgineer && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/asgineer bundle exec rspec .spec
@@ -2962,11 +4130,46 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+- name: scala
+>>>>>>> upstream/master
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+<<<<<<< HEAD
+    - name: cowboy
+      commands:
+      - cd elixir/cowboy && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/cowboy bundle exec rspec .spec
+      - make  -f elixir/cowboy/.Makefile collect
+=======
+    - name: finch
+      commands:
+      - cd scala/finch && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/finch bundle exec rspec .spec
+      - make  -f scala/finch/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: baize-asgi
       commands:
       - cd python/baize-asgi && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/baize-asgi bundle exec rspec .spec
       - make  -f python/baize-asgi/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -2977,11 +4180,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: cowboy_stream
+      commands:
+      - cd elixir/cowboy_stream && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/cowboy_stream bundle exec rspec .spec
+      - make  -f elixir/cowboy_stream/.Makefile collect
+=======
+    - name: akkahttp
+      commands:
+      - cd scala/akkahttp && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/akkahttp bundle exec rspec .spec
+      - make  -f scala/akkahttp/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: baize-wsgi
       commands:
       - cd python/baize-wsgi && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/baize-wsgi bundle exec rspec .spec
       - make  -f python/baize-wsgi/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -2992,11 +4211,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: plug
+      commands:
+      - cd elixir/plug && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/plug bundle exec rspec .spec
+      - make  -f elixir/plug/.Makefile collect
+=======
+    - name: finatra
+      commands:
+      - cd scala/finatra && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/finatra bundle exec rspec .spec
+      - make  -f scala/finatra/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: blacksheep
       commands:
       - cd python/blacksheep && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/blacksheep bundle exec rspec .spec
       - make  -f python/blacksheep/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3007,11 +4242,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: phoenix
+      commands:
+      - cd elixir/phoenix && make build  -f .Makefile  && cd -
+      - FRAMEWORK=elixir/phoenix bundle exec rspec .spec
+      - make  -f elixir/phoenix/.Makefile collect
+=======
+    - name: http4s
+      commands:
+      - cd scala/http4s && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/http4s bundle exec rspec .spec
+      - make  -f scala/http4s/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: bottle
       commands:
       - cd python/bottle && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/bottle bundle exec rspec .spec
       - make  -f python/bottle/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3022,11 +4273,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: scala
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: finch
+      commands:
+      - cd scala/finch && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/finch bundle exec rspec .spec
+      - make  -f scala/finch/.Makefile collect
+=======
+    - name: play
+      commands:
+      - cd scala/play && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/play bundle exec rspec .spec
+      - make  -f scala/play/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: cherrypy
       commands:
       - cd python/cherrypy && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/cherrypy bundle exec rspec .spec
       - make  -f python/cherrypy/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3037,11 +4322,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: akkahttp
+      commands:
+      - cd scala/akkahttp && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/akkahttp bundle exec rspec .spec
+      - make  -f scala/akkahttp/.Makefile collect
+=======
+- name: kotlin
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: kooby
+      commands:
+      - cd kotlin/kooby && make build  -f .Makefile  && cd -
+      - FRAMEWORK=kotlin/kooby bundle exec rspec .spec
+      - make  -f kotlin/kooby/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: clastic
       commands:
       - cd python/clastic && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/clastic bundle exec rspec .spec
       - make  -f python/clastic/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3052,11 +4371,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: finatra
+      commands:
+      - cd scala/finatra && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/finatra bundle exec rspec .spec
+      - make  -f scala/finatra/.Makefile collect
+=======
+    - name: ktor
+      commands:
+      - cd kotlin/ktor && make build  -f .Makefile  && cd -
+      - FRAMEWORK=kotlin/ktor bundle exec rspec .spec
+      - make  -f kotlin/ktor/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: cyclone
       commands:
       - cd python/cyclone && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/cyclone bundle exec rspec .spec
       - make  -f python/cyclone/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3067,11 +4402,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: http4s
+      commands:
+      - cd scala/http4s && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/http4s bundle exec rspec .spec
+      - make  -f scala/http4s/.Makefile collect
+=======
+    - name: http4k
+      commands:
+      - cd kotlin/http4k && make build  -f .Makefile  && cd -
+      - FRAMEWORK=kotlin/http4k bundle exec rspec .spec
+      - make  -f kotlin/http4k/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: django
       commands:
       - cd python/django && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/django bundle exec rspec .spec
       - make  -f python/django/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3082,11 +4433,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: play
+      commands:
+      - cd scala/play && make build  -f .Makefile  && cd -
+      - FRAMEWORK=scala/play bundle exec rspec .spec
+      - make  -f scala/play/.Makefile collect
+=======
+- name: nim
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: httpbeast
+      commands:
+      - cd nim/httpbeast && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/httpbeast bundle exec rspec .spec
+      - make  -f nim/httpbeast/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: django-ninja
       commands:
       - cd python/django-ninja && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/django-ninja bundle exec rspec .spec
       - make  -f python/django-ninja/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3097,11 +4482,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: kotlin
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: kooby
+      commands:
+      - cd kotlin/kooby && make build  -f .Makefile  && cd -
+      - FRAMEWORK=kotlin/kooby bundle exec rspec .spec
+      - make  -f kotlin/kooby/.Makefile collect
+=======
+    - name: rosencrantz
+      commands:
+      - cd nim/rosencrantz && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/rosencrantz bundle exec rspec .spec
+      - make  -f nim/rosencrantz/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: emmett
       commands:
       - cd python/emmett && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/emmett bundle exec rspec .spec
       - make  -f python/emmett/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3112,11 +4531,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: ktor
+      commands:
+      - cd kotlin/ktor && make build  -f .Makefile  && cd -
+      - FRAMEWORK=kotlin/ktor bundle exec rspec .spec
+      - make  -f kotlin/ktor/.Makefile collect
+=======
+    - name: mike
+      commands:
+      - cd nim/mike && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/mike bundle exec rspec .spec
+      - make  -f nim/mike/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: falcon
       commands:
       - cd python/falcon && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/falcon bundle exec rspec .spec
       - make  -f python/falcon/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3127,7 +4562,20 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: http4k
+      commands:
+      - cd kotlin/http4k && make build  -f .Makefile  && cd -
+      - FRAMEWORK=kotlin/http4k bundle exec rspec .spec
+      - make  -f kotlin/http4k/.Makefile collect
+=======
+=======
+    - name: scorper
+=======
     - name: fastapi
+>>>>>>> upstream/master
       commands:
       - cd python/fastapi && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/fastapi bundle exec rspec .spec
@@ -3142,11 +4590,21 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+>>>>>>> upstream/master
+    - name: whip
+      commands:
+      - cd nim/whip && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/whip bundle exec rspec .spec
+      - make  -f nim/whip/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: flask
       commands:
       - cd python/flask && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/flask bundle exec rspec .spec
       - make  -f python/flask/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3157,11 +4615,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: nim
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: httpbeast
+      commands:
+      - cd nim/httpbeast && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/httpbeast bundle exec rspec .spec
+      - make  -f nim/httpbeast/.Makefile collect
+=======
+    - name: jester
+      commands:
+      - cd nim/jester && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/jester bundle exec rspec .spec
+      - make  -f nim/jester/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: guillotina
       commands:
       - cd python/guillotina && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/guillotina bundle exec rspec .spec
       - make  -f python/guillotina/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3172,7 +4664,18 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: rosencrantz
+      commands:
+      - cd nim/rosencrantz && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/rosencrantz bundle exec rspec .spec
+      - make  -f nim/rosencrantz/.Makefile collect
+=======
+    - name: akane
+=======
     - name: hug
+>>>>>>> upstream/master
       commands:
       - cd python/hug && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/hug bundle exec rspec .spec
@@ -3204,9 +4707,16 @@ blocks:
         value: GET:/
     - name: klein
       commands:
+<<<<<<< HEAD
+      - cd c/agoo-c && make build  -f .Makefile  && cd -
+      - FRAMEWORK=c/agoo-c bundle exec rspec .spec
+      - make  -f c/agoo-c/.Makefile collect
+>>>>>>> upstream/master
+=======
       - cd python/klein && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/klein bundle exec rspec .spec
       - make  -f python/klein/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3217,11 +4727,43 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: mike
+      commands:
+      - cd nim/mike && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/mike bundle exec rspec .spec
+      - make  -f nim/mike/.Makefile collect
+=======
+    - name: kore
+      commands:
+      - cd c/kore && make build  -f .Makefile  && cd -
+      - FRAMEWORK=c/kore bundle exec rspec .spec
+      - make  -f c/kore/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+    - name: whip
+      commands:
+      - cd nim/whip && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/whip bundle exec rspec .spec
+      - make  -f nim/whip/.Makefile collect
+=======
     - name: masonite
       commands:
       - cd python/masonite && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/masonite bundle exec rspec .spec
       - make  -f python/masonite/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3232,11 +4774,44 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+    - name: jester
+      commands:
+      - cd nim/jester && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/jester bundle exec rspec .spec
+      - make  -f nim/jester/.Makefile collect
+=======
+- name: cpp
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: nawa
+      commands:
+      - cd cpp/nawa && make build  -f .Makefile  && cd -
+      - FRAMEWORK=cpp/nawa bundle exec rspec .spec
+      - make  -f cpp/nawa/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: molten
       commands:
       - cd python/molten && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/molten bundle exec rspec .spec
       - make  -f python/molten/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3247,11 +4822,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: akane
+      commands:
+      - cd nim/akane && make build  -f .Makefile  && cd -
+      - FRAMEWORK=nim/akane bundle exec rspec .spec
+      - make  -f nim/akane/.Makefile collect
+=======
+    - name: drogon
+      commands:
+      - cd cpp/drogon && make build  -f .Makefile  && cd -
+      - FRAMEWORK=cpp/drogon bundle exec rspec .spec
+      - make  -f cpp/drogon/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: nameko
       commands:
       - cd python/nameko && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/nameko bundle exec rspec .spec
       - make  -f python/nameko/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3262,11 +4853,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: perl
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: dancer2
+      commands:
+      - cd perl/dancer2 && make build  -f .Makefile  && cd -
+      - FRAMEWORK=perl/dancer2 bundle exec rspec .spec
+      - make  -f perl/dancer2/.Makefile collect
+=======
+    - name: evhtp
+      commands:
+      - cd cpp/evhtp && make build  -f .Makefile  && cd -
+      - FRAMEWORK=cpp/evhtp bundle exec rspec .spec
+      - make  -f cpp/evhtp/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: pyramid
       commands:
       - cd python/pyramid && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/pyramid bundle exec rspec .spec
       - make  -f python/pyramid/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3277,11 +4902,49 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: c
+=======
+- name: ruby
+>>>>>>> upstream/master
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+<<<<<<< HEAD
+    - name: agoo-c
+      commands:
+      - cd c/agoo-c && make build  -f .Makefile  && cd -
+      - FRAMEWORK=c/agoo-c bundle exec rspec .spec
+      - make  -f c/agoo-c/.Makefile collect
+=======
+    - name: rack_app
+      commands:
+      - cd ruby/rack_app && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/rack_app bundle exec rspec .spec
+      - make  -f ruby/rack_app/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: quart
       commands:
       - cd python/quart && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/quart bundle exec rspec .spec
       - make  -f python/quart/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3292,11 +4955,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: kore
+      commands:
+      - cd c/kore && make build  -f .Makefile  && cd -
+      - FRAMEWORK=c/kore bundle exec rspec .spec
+      - make  -f c/kore/.Makefile collect
+=======
+    - name: grape
+      commands:
+      - cd ruby/grape && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/grape bundle exec rspec .spec
+      - make  -f ruby/grape/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: responder
       commands:
       - cd python/responder && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/responder bundle exec rspec .spec
       - make  -f python/responder/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3307,11 +4986,45 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: cpp
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: nawa
+      commands:
+      - cd cpp/nawa && make build  -f .Makefile  && cd -
+      - FRAMEWORK=cpp/nawa bundle exec rspec .spec
+      - make  -f cpp/nawa/.Makefile collect
+=======
+    - name: cuba
+      commands:
+      - cd ruby/cuba && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/cuba bundle exec rspec .spec
+      - make  -f ruby/cuba/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: sanic
       commands:
       - cd python/sanic && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/sanic bundle exec rspec .spec
       - make  -f python/sanic/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3322,11 +5035,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: drogon
+      commands:
+      - cd cpp/drogon && make build  -f .Makefile  && cd -
+      - FRAMEWORK=cpp/drogon bundle exec rspec .spec
+      - make  -f cpp/drogon/.Makefile collect
+=======
+    - name: agoo
+      commands:
+      - cd ruby/agoo && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/agoo bundle exec rspec .spec
+      - make  -f ruby/agoo/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: starlette
       commands:
       - cd python/starlette && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/starlette bundle exec rspec .spec
       - make  -f python/starlette/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3337,11 +5066,27 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: evhtp
+      commands:
+      - cd cpp/evhtp && make build  -f .Makefile  && cd -
+      - FRAMEWORK=cpp/evhtp bundle exec rspec .spec
+      - make  -f cpp/evhtp/.Makefile collect
+=======
+    - name: roda
+      commands:
+      - cd ruby/roda && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/roda bundle exec rspec .spec
+      - make  -f ruby/roda/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: tonberry
       commands:
       - cd python/tonberry && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/tonberry bundle exec rspec .spec
       - make  -f python/tonberry/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3352,11 +5097,160 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: ruby
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: rack_app
+      commands:
+      - cd ruby/rack_app && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/rack_app bundle exec rspec .spec
+      - make  -f ruby/rack_app/.Makefile collect
+=======
+    - name: camping
+      commands:
+      - cd ruby/camping && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/camping bundle exec rspec .spec
+      - make  -f ruby/camping/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+    - name: grape
+      commands:
+      - cd ruby/grape && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/grape bundle exec rspec .spec
+      - make  -f ruby/grape/.Makefile collect
+=======
+    - name: rack-routing
+      commands:
+      - cd ruby/rack-routing && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/rack-routing bundle exec rspec .spec
+      - make  -f ruby/rack-routing/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+    - name: cuba
+      commands:
+      - cd ruby/cuba && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/cuba bundle exec rspec .spec
+      - make  -f ruby/cuba/.Makefile collect
+=======
+    - name: rails
+      commands:
+      - cd ruby/rails && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/rails bundle exec rspec .spec
+      - make  -f ruby/rails/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+    - name: agoo
+      commands:
+      - cd ruby/agoo && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/agoo bundle exec rspec .spec
+      - make  -f ruby/agoo/.Makefile collect
+=======
+    - name: sinatra
+      commands:
+      - cd ruby/sinatra && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/sinatra bundle exec rspec .spec
+      - make  -f ruby/sinatra/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+    - name: roda
+      commands:
+      - cd ruby/roda && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/roda bundle exec rspec .spec
+      - make  -f ruby/roda/.Makefile collect
+=======
+    - name: hanami-api
+      commands:
+      - cd ruby/hanami-api && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/hanami-api bundle exec rspec .spec
+      - make  -f ruby/hanami-api/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+    - name: camping
+      commands:
+      - cd ruby/camping && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/camping bundle exec rspec .spec
+      - make  -f ruby/camping/.Makefile collect
+=======
+    - name: syro
+      commands:
+      - cd ruby/syro && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/syro bundle exec rspec .spec
+      - make  -f ruby/syro/.Makefile collect
+>>>>>>> upstream/master
+=======
     - name: tornado
       commands:
       - cd python/tornado && make build  -f .Makefile  && cd -
       - FRAMEWORK=python/tornado bundle exec rspec .spec
       - make  -f python/tornado/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL
@@ -3367,11 +5261,16 @@ blocks:
         value: '64'
       - name: ROUTES
         value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: rack-routing
+=======
 - name: r
   dependencies:
   - setup
   task:
     prologue:
+>>>>>>> upstream/master
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
       - cache restore wrk
@@ -3432,20 +5331,12 @@ blocks:
         value: GET:/
     - name: rserve
       commands:
-      - cd r/rserve && make build  -f .Makefile  && cd -
-      - FRAMEWORK=r/rserve bundle exec rspec .spec
-      - make  -f r/rserve/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: ruby
+<<<<<<< HEAD
+      - cd ruby/syro && make build  -f .Makefile  && cd -
+      - FRAMEWORK=ruby/syro bundle exec rspec .spec
+      - make  -f ruby/syro/.Makefile collect
+=======
+- name: julia
   dependencies:
   - setup
   task:
@@ -3463,7 +5354,59 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
+    - name: merly
+      commands:
+      - cd julia/merly && make build  -f .Makefile  && cd -
+      - FRAMEWORK=julia/merly bundle exec rspec .spec
+      - make  -f julia/merly/.Makefile collect
+>>>>>>> upstream/master
+=======
+      - cd r/rserve && make build  -f .Makefile  && cd -
+      - FRAMEWORK=r/rserve bundle exec rspec .spec
+      - make  -f r/rserve/.Makefile collect
+>>>>>>> upstream/master
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: DATABASE_URL
+        value: postgresql://postgres@0.0.0.0/benchmark
+      - name: DURATION
+        value: '10'
+      - name: CONCURRENCIES
+        value: '64'
+      - name: ROUTES
+        value: GET:/
+<<<<<<< HEAD
+<<<<<<< HEAD
+- name: julia
+=======
+- name: javascript
+>>>>>>> upstream/master
+=======
+- name: ruby
+>>>>>>> upstream/master
+  dependencies:
+  - setup
+  task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+<<<<<<< HEAD
+<<<<<<< HEAD
+    - name: merly
+=======
     - name: agoo
+>>>>>>> upstream/master
       commands:
       - cd ruby/agoo && make build  -f .Makefile  && cd -
       - FRAMEWORK=ruby/agoo bundle exec rspec .spec
@@ -3480,9 +5423,19 @@ blocks:
         value: GET:/
     - name: camping
       commands:
+<<<<<<< HEAD
+=======
+    - name: feathersjs
+      commands:
+>>>>>>> upstream/master
+      - cd javascript/feathersjs && make build  -f .Makefile  && cd -
+      - FRAMEWORK=javascript/feathersjs bundle exec rspec .spec
+      - make  -f javascript/feathersjs/.Makefile collect
+=======
       - cd ruby/camping && make build  -f .Makefile  && cd -
       - FRAMEWORK=ruby/camping bundle exec rspec .spec
       - make  -f ruby/camping/.Makefile collect
+>>>>>>> upstream/master
       - bundle exec rake db:raw_export
       env_vars:
       - name: DATABASE_URL

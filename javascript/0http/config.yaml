@@ -1,3 +1,7 @@
 framework:
   github: jkyberneees/0http
   version: 3.1
+
+  engines:
+    - node
+    - uwebsockets

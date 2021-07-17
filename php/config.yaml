@@ -1,3 +1,46 @@
-provider:
-  default:
-    language: 7.4
+language:
+  version: 3.0
+
+  files:
+    - "**/*.php"
+    - composer.json
+
+  bootstrap:
+    - curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - composer install --no-dev --prefer-dist --classmap-authoritative
+    - composer dumpautoload -o
+
+  engines:
+    php-fpm:
+      deps:
+        - nginx
+    workerman:
+      extensions:
+        - event
+      deps:
+        - libevent-dev
+      modules:
+        - pcntl
+        - sockets
+      command: php public/index.php start
+    road-runner:
+      files:
+        - .road-runner/.rr.yaml
+      bootstrap:
+        - vendor/bin/rr get-binary
+      command: ./rr serve
+    swoole:
+      extensions:
+        - swoole
+      command: php public/index.php
+    reactphp:
+      deps:
+        - libevent-dev
+      modules:
+        - intl
+        - pcntl
+        - sockets
+
+framework:
+  engines:
+    - php-fpm

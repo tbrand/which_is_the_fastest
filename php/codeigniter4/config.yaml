@@ -2,12 +2,12 @@ framework:
   website: codeigniter.com
   version: 4.1
 
-php_mod:
-  - intl
+  modules:
+    - intl
 
-environment:
-  CI_ENVIRONMENT: production
+  environment:
+    CI_ENVIRONMENT: production
 
-before_command:
-  - mkdir writable/cache -p
-  - chown -R www-data:www-data writable/cache
+  bootstrap:
+    - mkdir writable/cache -p
+    - chown -R www-data:www-data writable/cache

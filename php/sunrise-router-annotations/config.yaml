@@ -2,5 +2,5 @@ framework:
   github: sunrise-php/http-router
   version: 2.7
 
-php_ext:
-  - apcu
+  extensions:
+    - apcu

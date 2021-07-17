@@ -1,0 +1,4 @@
+http:
+  address: :3000
+  workers:
+    command: "php public/index.php"

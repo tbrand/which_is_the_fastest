@@ -1,0 +1,10 @@
+{
+    "require": {
+      "cubex/workerman": "~0.1.0"
+    },
+    "autoload": {
+      "psr-4": {
+        "CubexMin\\": "src/"
+      }
+    }
+  }

@@ -2,6 +2,9 @@ framework:
   website: nette.org/en/
   version: 3.1
 
-before_command:
-  - mkdir -p temp/cache
-  - chmod 777 -R temp
+  files:
+    - app/config/common.neon
+
+  bootstrap:
+    - mkdir -p temp/cache
+    - chmod 777 -R temp

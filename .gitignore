@@ -40,3 +40,4 @@ obj
 [Rr]elease/
 *.fsproj
 *.fsproj.user
+.env.custom

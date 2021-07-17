@@ -1,12 +1,12 @@
 ---
 version: v1.0
 name: Benchmarking suite
-execution_time_limit:
-  hours: 24
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu2004
+    os_image: ubuntu1804
+execution_time_limit:
+  hours: 24
 blocks:
 - name: setup
   dependencies: []
@@ -25,1446 +25,11 @@ blocks:
       - bundle install
       - cache store built-in .cache
       - bundle exec rake config
-- name: c
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/c/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: agoo-c
-      commands:
-      - cd c/agoo-c && make build  -f .Makefile  && cd -
-      - FRAMEWORK=c/agoo-c bundle exec rspec .spec
-      - make  -f c/agoo-c/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: kore
-      commands:
-      - cd c/kore && make build  -f .Makefile  && cd -
-      - FRAMEWORK=c/kore bundle exec rspec .spec
-      - make  -f c/kore/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: clojure
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/clojure/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: coast
-      commands:
-      - cd clojure/coast && make build  -f .Makefile  && cd -
-      - FRAMEWORK=clojure/coast bundle exec rspec .spec
-      - make  -f clojure/coast/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: donkey
-      commands:
-      - cd clojure/donkey && make build  -f .Makefile  && cd -
-      - FRAMEWORK=clojure/donkey bundle exec rspec .spec
-      - make  -f clojure/donkey/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: luminus
-      commands:
-      - cd clojure/luminus && make build  -f .Makefile  && cd -
-      - FRAMEWORK=clojure/luminus bundle exec rspec .spec
-      - make  -f clojure/luminus/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: yada
-      commands:
-      - cd clojure/yada && make build  -f .Makefile  && cd -
-      - FRAMEWORK=clojure/yada bundle exec rspec .spec
-      - make  -f clojure/yada/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: cpp
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/cpp/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: drogon
-      commands:
-      - cd cpp/drogon && make build  -f .Makefile  && cd -
-      - FRAMEWORK=cpp/drogon bundle exec rspec .spec
-      - make  -f cpp/drogon/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: evhtp
-      commands:
-      - cd cpp/evhtp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=cpp/evhtp bundle exec rspec .spec
-      - make  -f cpp/evhtp/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nawa
-      commands:
-      - cd cpp/nawa && make build  -f .Makefile  && cd -
-      - FRAMEWORK=cpp/nawa bundle exec rspec .spec
-      - make  -f cpp/nawa/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: crystal
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/crystal/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: amber
-      commands:
-      - cd crystal/amber && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/amber bundle exec rspec .spec
-      - make  -f crystal/amber/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: athena
-      commands:
-      - cd crystal/athena && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/athena bundle exec rspec .spec
-      - make  -f crystal/athena/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: grip
-      commands:
-      - cd crystal/grip && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/grip bundle exec rspec .spec
-      - make  -f crystal/grip/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: kemal
-      commands:
-      - cd crystal/kemal && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/kemal bundle exec rspec .spec
-      - make  -f crystal/kemal/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: orion
-      commands:
-      - cd crystal/orion && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/orion bundle exec rspec .spec
-      - make  -f crystal/orion/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: router.cr
-      commands:
-      - cd crystal/router.cr && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/router.cr bundle exec rspec .spec
-      - make  -f crystal/router.cr/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: runcobo
-      commands:
-      - cd crystal/runcobo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/runcobo bundle exec rspec .spec
-      - make  -f crystal/runcobo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: shivneri
-      commands:
-      - cd crystal/shivneri && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/shivneri bundle exec rspec .spec
-      - make  -f crystal/shivneri/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: spider-gazelle
-      commands:
-      - cd crystal/spider-gazelle && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/spider-gazelle bundle exec rspec .spec
-      - make  -f crystal/spider-gazelle/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: toro
-      commands:
-      - cd crystal/toro && make build  -f .Makefile  && cd -
-      - FRAMEWORK=crystal/toro bundle exec rspec .spec
-      - make  -f crystal/toro/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: csharp
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/csharp/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: aspnetcore
-      commands:
-      - cd csharp/aspnetcore && make build  -f .Makefile  && cd -
-      - FRAMEWORK=csharp/aspnetcore bundle exec rspec .spec
-      - make  -f csharp/aspnetcore/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: beetlex
-      commands:
-      - cd csharp/beetlex && make build  -f .Makefile  && cd -
-      - FRAMEWORK=csharp/beetlex bundle exec rspec .spec
-      - make  -f csharp/beetlex/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: carter
-      commands:
-      - cd csharp/carter && make build  -f .Makefile  && cd -
-      - FRAMEWORK=csharp/carter bundle exec rspec .spec
-      - make  -f csharp/carter/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: simplify.web
-      commands:
-      - cd csharp/simplify.web && make build  -f .Makefile  && cd -
-      - FRAMEWORK=csharp/simplify.web bundle exec rspec .spec
-      - make  -f csharp/simplify.web/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: dart
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/dart/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: start
-      commands:
-      - cd dart/start && make build  -f .Makefile  && cd -
-      - FRAMEWORK=dart/start bundle exec rspec .spec
-      - make  -f dart/start/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: elixir
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/elixir/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: cowboy
-      commands:
-      - cd elixir/cowboy && make build  -f .Makefile  && cd -
-      - FRAMEWORK=elixir/cowboy bundle exec rspec .spec
-      - make  -f elixir/cowboy/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: cowboy_stream
-      commands:
-      - cd elixir/cowboy_stream && make build  -f .Makefile  && cd -
-      - FRAMEWORK=elixir/cowboy_stream bundle exec rspec .spec
-      - make  -f elixir/cowboy_stream/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: phoenix
-      commands:
-      - cd elixir/phoenix && make build  -f .Makefile  && cd -
-      - FRAMEWORK=elixir/phoenix bundle exec rspec .spec
-      - make  -f elixir/phoenix/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: plug
-      commands:
-      - cd elixir/plug && make build  -f .Makefile  && cd -
-      - FRAMEWORK=elixir/plug bundle exec rspec .spec
-      - make  -f elixir/plug/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: fsharp
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/fsharp/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: falco
-      commands:
-      - cd fsharp/falco && make build  -f .Makefile  && cd -
-      - FRAMEWORK=fsharp/falco bundle exec rspec .spec
-      - make  -f fsharp/falco/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: frank
-      commands:
-      - cd fsharp/frank && make build  -f .Makefile  && cd -
-      - FRAMEWORK=fsharp/frank bundle exec rspec .spec
-      - make  -f fsharp/frank/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: giraffe
-      commands:
-      - cd fsharp/giraffe && make build  -f .Makefile  && cd -
-      - FRAMEWORK=fsharp/giraffe bundle exec rspec .spec
-      - make  -f fsharp/giraffe/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: saturn
-      commands:
-      - cd fsharp/saturn && make build  -f .Makefile  && cd -
-      - FRAMEWORK=fsharp/saturn bundle exec rspec .spec
-      - make  -f fsharp/saturn/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: suave
-      commands:
-      - cd fsharp/suave && make build  -f .Makefile  && cd -
-      - FRAMEWORK=fsharp/suave bundle exec rspec .spec
-      - make  -f fsharp/suave/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: websharper
-      commands:
-      - cd fsharp/websharper && make build  -f .Makefile  && cd -
-      - FRAMEWORK=fsharp/websharper bundle exec rspec .spec
-      - make  -f fsharp/websharper/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: go
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/go/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: aero
-      commands:
-      - cd go/aero && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/aero bundle exec rspec .spec
-      - make  -f go/aero/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: air
-      commands:
-      - cd go/air && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/air bundle exec rspec .spec
-      - make  -f go/air/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: atreugo
-      commands:
-      - cd go/atreugo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/atreugo bundle exec rspec .spec
-      - make  -f go/atreugo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: beego
-      commands:
-      - cd go/beego && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/beego bundle exec rspec .spec
-      - make  -f go/beego/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: chi
-      commands:
-      - cd go/chi && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/chi bundle exec rspec .spec
-      - make  -f go/chi/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: clevergo
-      commands:
-      - cd go/clevergo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/clevergo bundle exec rspec .spec
-      - make  -f go/clevergo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: echo
-      commands:
-      - cd go/echo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/echo bundle exec rspec .spec
-      - make  -f go/echo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fasthttp
-      commands:
-      - cd go/fasthttp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/fasthttp bundle exec rspec .spec
-      - make  -f go/fasthttp/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fiber
-      commands:
-      - cd go/fiber && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/fiber bundle exec rspec .spec
-      - make  -f go/fiber/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gearbox
-      commands:
-      - cd go/gearbox && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gearbox bundle exec rspec .spec
-      - make  -f go/gearbox/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gf
-      commands:
-      - cd go/gf && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gf bundle exec rspec .spec
-      - make  -f go/gf/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gin
-      commands:
-      - cd go/gin && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gin bundle exec rspec .spec
-      - make  -f go/gin/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gorilla-mux
-      commands:
-      - cd go/gorilla-mux && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gorilla-mux bundle exec rspec .spec
-      - make  -f go/gorilla-mux/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: goroute
-      commands:
-      - cd go/goroute && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/goroute bundle exec rspec .spec
-      - make  -f go/goroute/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gorouter
-      commands:
-      - cd go/gorouter && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gorouter bundle exec rspec .spec
-      - make  -f go/gorouter/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gorouter-fasthttp
-      commands:
-      - cd go/gorouter-fasthttp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gorouter-fasthttp bundle exec rspec .spec
-      - make  -f go/gorouter-fasthttp/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: goyave
-      commands:
-      - cd go/goyave && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/goyave bundle exec rspec .spec
-      - make  -f go/goyave/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gramework
-      commands:
-      - cd go/gramework && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/gramework bundle exec rspec .spec
-      - make  -f go/gramework/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: httprouter
-      commands:
-      - cd go/httprouter && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/httprouter bundle exec rspec .spec
-      - make  -f go/httprouter/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: kami
-      commands:
-      - cd go/kami && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/kami bundle exec rspec .spec
-      - make  -f go/kami/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: macaron
-      commands:
-      - cd go/macaron && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/macaron bundle exec rspec .spec
-      - make  -f go/macaron/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: mars
-      commands:
-      - cd go/mars && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/mars bundle exec rspec .spec
-      - make  -f go/mars/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: router
-      commands:
-      - cd go/router && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/router bundle exec rspec .spec
-      - make  -f go/router/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rte
-      commands:
-      - cd go/rte && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/rte bundle exec rspec .spec
-      - make  -f go/rte/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: tango
-      commands:
-      - cd go/tango && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/tango bundle exec rspec .spec
-      - make  -f go/tango/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: violetear
-      commands:
-      - cd go/violetear && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/violetear bundle exec rspec .spec
-      - make  -f go/violetear/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: webgo
-      commands:
-      - cd go/webgo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=go/webgo bundle exec rspec .spec
-      - make  -f go/webgo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: haskell
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/haskell/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: scotty
-      commands:
-      - cd haskell/scotty && make build  -f .Makefile  && cd -
-      - FRAMEWORK=haskell/scotty bundle exec rspec .spec
-      - make  -f haskell/scotty/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: servant
-      commands:
-      - cd haskell/servant && make build  -f .Makefile  && cd -
-      - FRAMEWORK=haskell/servant bundle exec rspec .spec
-      - make  -f haskell/servant/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: java
-  dependencies:
-  - setup
-  run:
-    when: change_in(['/java/','/data.json'])
-  task:
-    prologue:
-      commands:
-      - cache restore $SEMAPHORE_GIT_SHA
-      - cache restore wrk
-      - sudo install wrk /usr/local/bin
-      - cache restore bin
-      - cache restore built-in
-      - sem-service start postgres
-      - createdb -U postgres -h 0.0.0.0 benchmark
-      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
-      - bundle config path .cache
-      - bundle install
-      - bundle exec rake config
-    jobs:
-    - name: act
-      commands:
-      - cd java/act && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/act bundle exec rspec .spec
-      - make  -f java/act/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: activej
-      commands:
-      - cd java/activej && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/activej bundle exec rspec .spec
-      - make  -f java/activej/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: blade
-      commands:
-      - cd java/blade && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/blade bundle exec rspec .spec
-      - make  -f java/blade/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: javalin
-      commands:
-      - cd java/javalin && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/javalin bundle exec rspec .spec
-      - make  -f java/javalin/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: jersey-grizzly2
-      commands:
-      - cd java/jersey-grizzly2 && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/jersey-grizzly2 bundle exec rspec .spec
-      - make  -f java/jersey-grizzly2/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: jersey3-grizzly2
-      commands:
-      - cd java/jersey3-grizzly2 && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/jersey3-grizzly2 bundle exec rspec .spec
-      - make  -f java/jersey3-grizzly2/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: jooby
-      commands:
-      - cd java/jooby && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/jooby bundle exec rspec .spec
-      - make  -f java/jooby/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: light-4j
-      commands:
-      - cd java/light-4j && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/light-4j bundle exec rspec .spec
-      - make  -f java/light-4j/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: micronaut
-      commands:
-      - cd java/micronaut && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/micronaut bundle exec rspec .spec
-      - make  -f java/micronaut/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: quarkus
-      commands:
-      - cd java/quarkus && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/quarkus bundle exec rspec .spec
-      - make  -f java/quarkus/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rapidoid
-      commands:
-      - cd java/rapidoid && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/rapidoid bundle exec rspec .spec
-      - make  -f java/rapidoid/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: restheart
-      commands:
-      - cd java/restheart && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/restheart bundle exec rspec .spec
-      - make  -f java/restheart/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: spark
-      commands:
-      - cd java/spark && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/spark bundle exec rspec .spec
-      - make  -f java/spark/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: spring
-      commands:
-      - cd java/spring && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/spring bundle exec rspec .spec
-      - make  -f java/spring/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: struts2
-      commands:
-      - cd java/struts2 && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/struts2 bundle exec rspec .spec
-      - make  -f java/struts2/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: undertow
-      commands:
-      - cd java/undertow && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/undertow bundle exec rspec .spec
-      - make  -f java/undertow/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: vertx
-      commands:
-      - cd java/vertx && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/vertx bundle exec rspec .spec
-      - make  -f java/vertx/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: vertx4web
-      commands:
-      - cd java/vertx4web && make build  -f .Makefile  && cd -
-      - FRAMEWORK=java/vertx4web bundle exec rspec .spec
-      - make  -f java/vertx4web/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
 - name: javascript
   dependencies:
   - setup
   run:
-    when: change_in(['/javascript/','/data.json'])
+    when: change_in('/javascript/','/data.json')
   task:
     prologue:
       commands:
@@ -1480,402 +45,20 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: 0http
+    - name: setup
       commands:
-      - cd javascript/0http && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/0http bundle exec rspec .spec
-      - make  -f javascript/0http/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: express
-      commands:
-      - cd javascript/express && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/express bundle exec rspec .spec
-      - make  -f javascript/express/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fastify
-      commands:
-      - cd javascript/fastify && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/fastify bundle exec rspec .spec
-      - make  -f javascript/fastify/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: feathersjs
-      commands:
-      - cd javascript/feathersjs && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/feathersjs bundle exec rspec .spec
-      - make  -f javascript/feathersjs/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: foxify
-      commands:
-      - cd javascript/foxify && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/foxify bundle exec rspec .spec
-      - make  -f javascript/foxify/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fyrejet
-      commands:
-      - cd javascript/fyrejet && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/fyrejet bundle exec rspec .spec
-      - make  -f javascript/fyrejet/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fyrejet-uwebsockets
-      commands:
-      - cd javascript/fyrejet-uwebsockets && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/fyrejet-uwebsockets bundle exec rspec .spec
-      - make  -f javascript/fyrejet-uwebsockets/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: hapi
-      commands:
-      - cd javascript/hapi && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/hapi bundle exec rspec .spec
-      - make  -f javascript/hapi/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: iotjs-express
-      commands:
-      - cd javascript/iotjs-express && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/iotjs-express bundle exec rspec .spec
-      - make  -f javascript/iotjs-express/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: koa
-      commands:
-      - cd javascript/koa && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/koa bundle exec rspec .spec
-      - make  -f javascript/koa/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: low-http-server
-      commands:
-      - cd javascript/low-http-server && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/low-http-server bundle exec rspec .spec
-      - make  -f javascript/low-http-server/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: moleculer
-      commands:
-      - cd javascript/moleculer && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/moleculer bundle exec rspec .spec
-      - make  -f javascript/moleculer/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: muneem
-      commands:
-      - cd javascript/muneem && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/muneem bundle exec rspec .spec
-      - make  -f javascript/muneem/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nanoexpress
-      commands:
-      - cd javascript/nanoexpress && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/nanoexpress bundle exec rspec .spec
-      - make  -f javascript/nanoexpress/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: naturaljs-router
-      commands:
-      - cd javascript/naturaljs-router && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/naturaljs-router bundle exec rspec .spec
-      - make  -f javascript/naturaljs-router/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nestjs-express
-      commands:
-      - cd javascript/nestjs-express && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/nestjs-express bundle exec rspec .spec
-      - make  -f javascript/nestjs-express/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nestjs-fastify
-      commands:
-      - cd javascript/nestjs-fastify && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/nestjs-fastify bundle exec rspec .spec
-      - make  -f javascript/nestjs-fastify/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: polka
-      commands:
-      - cd javascript/polka && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/polka bundle exec rspec .spec
-      - make  -f javascript/polka/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: polkadot
-      commands:
-      - cd javascript/polkadot && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/polkadot bundle exec rspec .spec
-      - make  -f javascript/polkadot/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rayo
-      commands:
-      - cd javascript/rayo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/rayo bundle exec rspec .spec
-      - make  -f javascript/rayo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: restana
-      commands:
-      - cd javascript/restana && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/restana bundle exec rspec .spec
-      - make  -f javascript/restana/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: restify
-      commands:
-      - cd javascript/restify && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/restify bundle exec rspec .spec
-      - make  -f javascript/restify/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sails
-      commands:
-      - cd javascript/sails && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/sails bundle exec rspec .spec
-      - make  -f javascript/sails/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sifrr
-      commands:
-      - cd javascript/sifrr && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/sifrr bundle exec rspec .spec
-      - make  -f javascript/sifrr/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: tinyhttp
-      commands:
-      - cd javascript/tinyhttp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/tinyhttp bundle exec rspec .spec
-      - make  -f javascript/tinyhttp/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: turbo_polka
-      commands:
-      - cd javascript/turbo_polka && make build  -f .Makefile  && cd -
-      - FRAMEWORK=javascript/turbo_polka bundle exec rspec .spec
-      - make  -f javascript/turbo_polka/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: julia
+      - checkout
+- name: 0http
   dependencies:
-  - setup
+  - javascript
   run:
-    when: change_in(['/julia/','/data.json'])
+    when: change_in('/javascript/0http','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: 0http
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -1890,27 +73,35 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: merly
+    - name: node
       commands:
-      - cd julia/merly && make build  -f .Makefile  && cd -
-      - FRAMEWORK=julia/merly bundle exec rspec .spec
-      - make  -f julia/merly/.Makefile collect
+      - make  -f javascript/0http/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/0http/.Makefile collect.node
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: kotlin
+      - name: ENGINE
+        value: node
+    - name: uwebsockets
+      commands:
+      - make  -f javascript/0http/.Makefile build.uwebsockets
+      - bundle exec rspec .spec
+      - make  -f javascript/0http/.Makefile collect.uwebsockets
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: uwebsockets
+- name: express
   dependencies:
-  - setup
+  - javascript
   run:
-    when: change_in(['/kotlin/','/data.json'])
+    when: change_in('/javascript/express','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: express
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -1925,57 +116,26 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: http4k
+    - name: node
       commands:
-      - cd kotlin/http4k && make build  -f .Makefile  && cd -
-      - FRAMEWORK=kotlin/http4k bundle exec rspec .spec
-      - make  -f kotlin/http4k/.Makefile collect
+      - make  -f javascript/express/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/express/.Makefile collect.node
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: kooby
-      commands:
-      - cd kotlin/kooby && make build  -f .Makefile  && cd -
-      - FRAMEWORK=kotlin/kooby bundle exec rspec .spec
-      - make  -f kotlin/kooby/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: ktor
-      commands:
-      - cd kotlin/ktor && make build  -f .Makefile  && cd -
-      - FRAMEWORK=kotlin/ktor bundle exec rspec .spec
-      - make  -f kotlin/ktor/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: nim
+      - name: ENGINE
+        value: node
+- name: fastify
   dependencies:
-  - setup
+  - javascript
   run:
-    when: change_in(['/nim/','/data.json'])
+    when: change_in('/javascript/fastify','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: fastify
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -1990,117 +150,26 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: akane
+    - name: node
       commands:
-      - cd nim/akane && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/akane bundle exec rspec .spec
-      - make  -f nim/akane/.Makefile collect
+      - make  -f javascript/fastify/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/fastify/.Makefile collect.node
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: httpbeast
-      commands:
-      - cd nim/httpbeast && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/httpbeast bundle exec rspec .spec
-      - make  -f nim/httpbeast/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: jester
-      commands:
-      - cd nim/jester && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/jester bundle exec rspec .spec
-      - make  -f nim/jester/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: mike
-      commands:
-      - cd nim/mike && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/mike bundle exec rspec .spec
-      - make  -f nim/mike/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rosencrantz
-      commands:
-      - cd nim/rosencrantz && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/rosencrantz bundle exec rspec .spec
-      - make  -f nim/rosencrantz/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: scorper
-      commands:
-      - cd nim/scorper && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/scorper bundle exec rspec .spec
-      - make  -f nim/scorper/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: whip
-      commands:
-      - cd nim/whip && make build  -f .Makefile  && cd -
-      - FRAMEWORK=nim/whip bundle exec rspec .spec
-      - make  -f nim/whip/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: perl
+      - name: ENGINE
+        value: node
+- name: feathersjs
   dependencies:
-  - setup
+  - javascript
   run:
-    when: change_in(['/perl/','/data.json'])
+    when: change_in('/javascript/feathersjs','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: feathersjs
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -2115,26 +184,675 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: dancer2
+    - name: node
       commands:
-      - cd perl/dancer2 && make build  -f .Makefile  && cd -
-      - FRAMEWORK=perl/dancer2 bundle exec rspec .spec
-      - make  -f perl/dancer2/.Makefile collect
+      - make  -f javascript/feathersjs/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/feathersjs/.Makefile collect.node
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
+      - name: ENGINE
+        value: node
+- name: foxify
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/foxify','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: foxify
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/foxify/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/foxify/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: fyrejet
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/fyrejet','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: fyrejet
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/fyrejet/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/fyrejet/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+    - name: uwebsockets
+      commands:
+      - make  -f javascript/fyrejet/.Makefile build.uwebsockets
+      - bundle exec rspec .spec
+      - make  -f javascript/fyrejet/.Makefile collect.uwebsockets
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: uwebsockets
+- name: hapi
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/hapi','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: hapi
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/hapi/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/hapi/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: iotjs-express
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/iotjs-express','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: iotjs-express
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/iotjs-express/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/iotjs-express/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: koa
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/koa','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: koa
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/koa/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/koa/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: moleculer
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/moleculer','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: moleculer
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/moleculer/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/moleculer/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: muneem
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/muneem','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: muneem
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/muneem/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/muneem/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: nanoexpress
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/nanoexpress','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: nanoexpress
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: uwebsockets
+      commands:
+      - make  -f javascript/nanoexpress/.Makefile build.uwebsockets
+      - bundle exec rspec .spec
+      - make  -f javascript/nanoexpress/.Makefile collect.uwebsockets
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: uwebsockets
+- name: naturaljs-router
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/naturaljs-router','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: naturaljs-router
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: uwebsockets
+      commands:
+      - make  -f javascript/naturaljs-router/.Makefile build.uwebsockets
+      - bundle exec rspec .spec
+      - make  -f javascript/naturaljs-router/.Makefile collect.uwebsockets
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: uwebsockets
+- name: nestjs-express
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/nestjs-express','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: nestjs-express
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/nestjs-express/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/nestjs-express/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: nestjs-fastify
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/nestjs-fastify','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: nestjs-fastify
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/nestjs-fastify/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/nestjs-fastify/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: polka
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/polka','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: polka
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/polka/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/polka/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: polkadot
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/polkadot','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: polkadot
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/polkadot/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/polkadot/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: rayo
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/rayo','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: rayo
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/rayo/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/rayo/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: restana
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/restana','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: restana
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/restana/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/restana/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: restify
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/restify','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: restify
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/restify/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/restify/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: sails
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/sails','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: sails
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/sails/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/sails/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
+- name: sifrr
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/sifrr','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: sifrr
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: uwebsockets
+      commands:
+      - make  -f javascript/sifrr/.Makefile build.uwebsockets
+      - bundle exec rspec .spec
+      - make  -f javascript/sifrr/.Makefile collect.uwebsockets
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: uwebsockets
+- name: tinyhttp
+  dependencies:
+  - javascript
+  run:
+    when: change_in('/javascript/tinyhttp','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: javascript
+    - name: FRAMEWORK
+      value: tinyhttp
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: node
+      commands:
+      - make  -f javascript/tinyhttp/.Makefile build.node
+      - bundle exec rspec .spec
+      - make  -f javascript/tinyhttp/.Makefile collect.node
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: node
 - name: php
   dependencies:
   - setup
   run:
-    when: change_in(['/php/','/data.json'])
+    when: change_in('/php/','/data.json')
   task:
     prologue:
       commands:
@@ -2150,762 +868,183 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: antidot
+    - name: setup
       commands:
-      - cd php/antidot && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/antidot bundle exec rspec .spec
-      - make  -f php/antidot/.Makefile collect
+      - checkout
+- name: antidot
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/antidot','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: antidot
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: reactphp
+      commands:
+      - make  -f php/antidot/.Makefile build.reactphp
+      - bundle exec rspec .spec
+      - make  -f php/antidot/.Makefile collect.reactphp
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: basicphp
+      - name: ENGINE
+        value: reactphp
+- name: basicphp
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/basicphp','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: basicphp
+    prologue:
       commands:
-      - cd php/basicphp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/basicphp bundle exec rspec .spec
-      - make  -f php/basicphp/.Makefile collect
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/basicphp/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/basicphp/.Makefile collect.php-fpm
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: bearframework
+      - name: ENGINE
+        value: php-fpm
+- name: bearframework
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/bearframework','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: bearframework
+    prologue:
       commands:
-      - cd php/bearframework && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/bearframework bundle exec rspec .spec
-      - make  -f php/bearframework/.Makefile collect
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/bearframework/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/bearframework/.Makefile collect.php-fpm
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: chubbyphp
+      - name: ENGINE
+        value: php-fpm
+- name: chubbyphp
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/chubbyphp','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: chubbyphp
+    prologue:
       commands:
-      - cd php/chubbyphp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/chubbyphp bundle exec rspec .spec
-      - make  -f php/chubbyphp/.Makefile collect
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/chubbyphp/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/chubbyphp/.Makefile collect.php-fpm
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: chubbyphp-roadrunner
-      commands:
-      - cd php/chubbyphp-roadrunner && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/chubbyphp-roadrunner bundle exec rspec .spec
-      - make  -f php/chubbyphp-roadrunner/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: chubbyphp-swoole
-      commands:
-      - cd php/chubbyphp-swoole && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/chubbyphp-swoole bundle exec rspec .spec
-      - make  -f php/chubbyphp-swoole/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: chubbyphp-workerman
-      commands:
-      - cd php/chubbyphp-workerman && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/chubbyphp-workerman bundle exec rspec .spec
-      - make  -f php/chubbyphp-workerman/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: codeigniter4
-      commands:
-      - cd php/codeigniter4 && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/codeigniter4 bundle exec rspec .spec
-      - make  -f php/codeigniter4/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: comet
-      commands:
-      - cd php/comet && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/comet bundle exec rspec .spec
-      - make  -f php/comet/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: cubex
-      commands:
-      - cd php/cubex && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/cubex bundle exec rspec .spec
-      - make  -f php/cubex/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: driftphp
-      commands:
-      - cd php/driftphp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/driftphp bundle exec rspec .spec
-      - make  -f php/driftphp/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fastsitephp
-      commands:
-      - cd php/fastsitephp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/fastsitephp bundle exec rspec .spec
-      - make  -f php/fastsitephp/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fatfree
-      commands:
-      - cd php/fatfree && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/fatfree bundle exec rspec .spec
-      - make  -f php/fatfree/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: hamlet
-      commands:
-      - cd php/hamlet && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/hamlet bundle exec rspec .spec
-      - make  -f php/hamlet/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: hyperf
-      commands:
-      - cd php/hyperf && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/hyperf bundle exec rspec .spec
-      - make  -f php/hyperf/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: ice
-      commands:
-      - cd php/ice && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/ice bundle exec rspec .spec
-      - make  -f php/ice/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: imi
-      commands:
-      - cd php/imi && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/imi bundle exec rspec .spec
-      - make  -f php/imi/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: laminas
-      commands:
-      - cd php/laminas && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/laminas bundle exec rspec .spec
-      - make  -f php/laminas/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: laravel
-      commands:
-      - cd php/laravel && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/laravel bundle exec rspec .spec
-      - make  -f php/laravel/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: laravel-s-laravel
-      commands:
-      - cd php/laravel-s-laravel && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/laravel-s-laravel bundle exec rspec .spec
-      - make  -f php/laravel-s-laravel/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: laravel-s-lumen
-      commands:
-      - cd php/laravel-s-lumen && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/laravel-s-lumen bundle exec rspec .spec
-      - make  -f php/laravel-s-lumen/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: lumen
-      commands:
-      - cd php/lumen && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/lumen bundle exec rspec .spec
-      - make  -f php/lumen/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: mark
-      commands:
-      - cd php/mark && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/mark bundle exec rspec .spec
-      - make  -f php/mark/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: mezzio
-      commands:
-      - cd php/mezzio && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/mezzio bundle exec rspec .spec
-      - make  -f php/mezzio/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nano
-      commands:
-      - cd php/nano && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/nano bundle exec rspec .spec
-      - make  -f php/nano/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nette
-      commands:
-      - cd php/nette && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/nette bundle exec rspec .spec
-      - make  -f php/nette/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: one
-      commands:
-      - cd php/one && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/one bundle exec rspec .spec
-      - make  -f php/one/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: one-fpm
-      commands:
-      - cd php/one-fpm && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/one-fpm bundle exec rspec .spec
-      - make  -f php/one-fpm/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: phalcon
-      commands:
-      - cd php/phalcon && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/phalcon bundle exec rspec .spec
-      - make  -f php/phalcon/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: siler
-      commands:
-      - cd php/siler && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/siler bundle exec rspec .spec
-      - make  -f php/siler/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: siler-swoole
-      commands:
-      - cd php/siler-swoole && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/siler-swoole bundle exec rspec .spec
-      - make  -f php/siler-swoole/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: simps
-      commands:
-      - cd php/simps && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/simps bundle exec rspec .spec
-      - make  -f php/simps/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: slim
-      commands:
-      - cd php/slim && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/slim bundle exec rspec .spec
-      - make  -f php/slim/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: slim-roadrunner
-      commands:
-      - cd php/slim-roadrunner && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/slim-roadrunner bundle exec rspec .spec
-      - make  -f php/slim-roadrunner/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: slim-swoole
-      commands:
-      - cd php/slim-swoole && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/slim-swoole bundle exec rspec .spec
-      - make  -f php/slim-swoole/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: spiral
-      commands:
-      - cd php/spiral && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/spiral bundle exec rspec .spec
-      - make  -f php/spiral/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sunrise-router
-      commands:
-      - cd php/sunrise-router && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/sunrise-router bundle exec rspec .spec
-      - make  -f php/sunrise-router/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sunrise-router-annotations
-      commands:
-      - cd php/sunrise-router-annotations && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/sunrise-router-annotations bundle exec rspec .spec
-      - make  -f php/sunrise-router-annotations/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sunrise-router-roadrunner
-      commands:
-      - cd php/sunrise-router-roadrunner && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/sunrise-router-roadrunner bundle exec rspec .spec
-      - make  -f php/sunrise-router-roadrunner/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sw-fw-less
-      commands:
-      - cd php/sw-fw-less && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/sw-fw-less bundle exec rspec .spec
-      - make  -f php/sw-fw-less/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: swoft
-      commands:
-      - cd php/swoft && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/swoft bundle exec rspec .spec
-      - make  -f php/swoft/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
+      - name: ENGINE
+        value: php-fpm
     - name: swoole
       commands:
-      - cd php/swoole && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/swoole bundle exec rspec .spec
-      - make  -f php/swoole/.Makefile collect
+      - make  -f php/chubbyphp/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/chubbyphp/.Makefile collect.swoole
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: swoole-coroutine
-      commands:
-      - cd php/swoole-coroutine && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/swoole-coroutine bundle exec rspec .spec
-      - make  -f php/swoole-coroutine/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: symfony
-      commands:
-      - cd php/symfony && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/symfony bundle exec rspec .spec
-      - make  -f php/symfony/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: ubiquity
-      commands:
-      - cd php/ubiquity && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/ubiquity bundle exec rspec .spec
-      - make  -f php/ubiquity/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: unic
-      commands:
-      - cd php/unic && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/unic bundle exec rspec .spec
-      - make  -f php/unic/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: webman
-      commands:
-      - cd php/webman && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/webman bundle exec rspec .spec
-      - make  -f php/webman/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
+      - name: ENGINE
+        value: swoole
     - name: workerman
       commands:
-      - cd php/workerman && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/workerman bundle exec rspec .spec
-      - make  -f php/workerman/.Makefile collect
+      - make  -f php/chubbyphp/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/chubbyphp/.Makefile collect.workerman
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: yii
+      - name: ENGINE
+        value: workerman
+    - name: road-runner
       commands:
-      - cd php/yii && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/yii bundle exec rspec .spec
-      - make  -f php/yii/.Makefile collect
+      - make  -f php/chubbyphp/.Makefile build.road-runner
+      - bundle exec rspec .spec
+      - make  -f php/chubbyphp/.Makefile collect.road-runner
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: yii-swoole
-      commands:
-      - cd php/yii-swoole && make build  -f .Makefile  && cd -
-      - FRAMEWORK=php/yii-swoole bundle exec rspec .spec
-      - make  -f php/yii-swoole/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: pony
+      - name: ENGINE
+        value: road-runner
+- name: codeigniter4
   dependencies:
-  - setup
+  - php
   run:
-    when: change_in(['/pony/','/data.json'])
+    when: change_in('/php/codeigniter4','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: codeigniter4
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -2920,27 +1059,26 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: jennet
+    - name: php-fpm
       commands:
-      - cd pony/jennet && make build  -f .Makefile  && cd -
-      - FRAMEWORK=pony/jennet bundle exec rspec .spec
-      - make  -f pony/jennet/.Makefile collect
+      - make  -f php/codeigniter4/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/codeigniter4/.Makefile collect.php-fpm
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: python
+      - name: ENGINE
+        value: php-fpm
+- name: comet
   dependencies:
-  - setup
+  - php
   run:
-    when: change_in(['/python/','/data.json'])
+    when: change_in('/php/comet','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: comet
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -2955,462 +1093,26 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: aiohttp
+    - name: workerman
       commands:
-      - cd python/aiohttp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/aiohttp bundle exec rspec .spec
-      - make  -f python/aiohttp/.Makefile collect
+      - make  -f php/comet/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/comet/.Makefile collect.workerman
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: apidaora
-      commands:
-      - cd python/apidaora && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/apidaora bundle exec rspec .spec
-      - make  -f python/apidaora/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: asgineer
-      commands:
-      - cd python/asgineer && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/asgineer bundle exec rspec .spec
-      - make  -f python/asgineer/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: baize-asgi
-      commands:
-      - cd python/baize-asgi && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/baize-asgi bundle exec rspec .spec
-      - make  -f python/baize-asgi/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: baize-wsgi
-      commands:
-      - cd python/baize-wsgi && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/baize-wsgi bundle exec rspec .spec
-      - make  -f python/baize-wsgi/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: blacksheep
-      commands:
-      - cd python/blacksheep && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/blacksheep bundle exec rspec .spec
-      - make  -f python/blacksheep/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: bottle
-      commands:
-      - cd python/bottle && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/bottle bundle exec rspec .spec
-      - make  -f python/bottle/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: cherrypy
-      commands:
-      - cd python/cherrypy && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/cherrypy bundle exec rspec .spec
-      - make  -f python/cherrypy/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: clastic
-      commands:
-      - cd python/clastic && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/clastic bundle exec rspec .spec
-      - make  -f python/clastic/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: cyclone
-      commands:
-      - cd python/cyclone && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/cyclone bundle exec rspec .spec
-      - make  -f python/cyclone/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: django
-      commands:
-      - cd python/django && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/django bundle exec rspec .spec
-      - make  -f python/django/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: django-ninja
-      commands:
-      - cd python/django-ninja && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/django-ninja bundle exec rspec .spec
-      - make  -f python/django-ninja/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: emmett
-      commands:
-      - cd python/emmett && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/emmett bundle exec rspec .spec
-      - make  -f python/emmett/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: falcon
-      commands:
-      - cd python/falcon && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/falcon bundle exec rspec .spec
-      - make  -f python/falcon/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: fastapi
-      commands:
-      - cd python/fastapi && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/fastapi bundle exec rspec .spec
-      - make  -f python/fastapi/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: flask
-      commands:
-      - cd python/flask && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/flask bundle exec rspec .spec
-      - make  -f python/flask/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: guillotina
-      commands:
-      - cd python/guillotina && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/guillotina bundle exec rspec .spec
-      - make  -f python/guillotina/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: hug
-      commands:
-      - cd python/hug && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/hug bundle exec rspec .spec
-      - make  -f python/hug/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: index.py
-      commands:
-      - cd python/index.py && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/index.py bundle exec rspec .spec
-      - make  -f python/index.py/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: klein
-      commands:
-      - cd python/klein && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/klein bundle exec rspec .spec
-      - make  -f python/klein/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: masonite
-      commands:
-      - cd python/masonite && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/masonite bundle exec rspec .spec
-      - make  -f python/masonite/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: molten
-      commands:
-      - cd python/molten && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/molten bundle exec rspec .spec
-      - make  -f python/molten/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nameko
-      commands:
-      - cd python/nameko && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/nameko bundle exec rspec .spec
-      - make  -f python/nameko/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: pyramid
-      commands:
-      - cd python/pyramid && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/pyramid bundle exec rspec .spec
-      - make  -f python/pyramid/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: quart
-      commands:
-      - cd python/quart && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/quart bundle exec rspec .spec
-      - make  -f python/quart/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: responder
-      commands:
-      - cd python/responder && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/responder bundle exec rspec .spec
-      - make  -f python/responder/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sanic
-      commands:
-      - cd python/sanic && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/sanic bundle exec rspec .spec
-      - make  -f python/sanic/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: starlette
-      commands:
-      - cd python/starlette && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/starlette bundle exec rspec .spec
-      - make  -f python/starlette/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: tonberry
-      commands:
-      - cd python/tonberry && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/tonberry bundle exec rspec .spec
-      - make  -f python/tonberry/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: tornado
-      commands:
-      - cd python/tornado && make build  -f .Makefile  && cd -
-      - FRAMEWORK=python/tornado bundle exec rspec .spec
-      - make  -f python/tornado/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: r
+      - name: ENGINE
+        value: workerman
+- name: cubex
   dependencies:
-  - setup
+  - php
   run:
-    when: change_in(['/r/','/data.json'])
+    when: change_in('/php/cubex','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: cubex
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -3425,72 +1127,1218 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: httpuv
+    - name: workerman
       commands:
-      - cd r/httpuv && make build  -f .Makefile  && cd -
-      - FRAMEWORK=r/httpuv bundle exec rspec .spec
-      - make  -f r/httpuv/.Makefile collect
+      - make  -f php/cubex/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/cubex/.Makefile collect.workerman
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: plumber
+      - name: ENGINE
+        value: workerman
+    - name: php-fpm
       commands:
-      - cd r/plumber && make build  -f .Makefile  && cd -
-      - FRAMEWORK=r/plumber bundle exec rspec .spec
-      - make  -f r/plumber/.Makefile collect
+      - make  -f php/cubex/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/cubex/.Makefile collect.php-fpm
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: restrserve
+      - name: ENGINE
+        value: php-fpm
+- name: driftphp
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/driftphp','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: driftphp
+    prologue:
       commands:
-      - cd r/restrserve && make build  -f .Makefile  && cd -
-      - FRAMEWORK=r/restrserve bundle exec rspec .spec
-      - make  -f r/restrserve/.Makefile collect
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: reactphp
+      commands:
+      - make  -f php/driftphp/.Makefile build.reactphp
+      - bundle exec rspec .spec
+      - make  -f php/driftphp/.Makefile collect.reactphp
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rserve
+      - name: ENGINE
+        value: reactphp
+- name: fastsitephp
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/fastsitephp','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: fastsitephp
+    prologue:
       commands:
-      - cd r/rserve && make build  -f .Makefile  && cd -
-      - FRAMEWORK=r/rserve bundle exec rspec .spec
-      - make  -f r/rserve/.Makefile collect
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/fastsitephp/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/fastsitephp/.Makefile collect.php-fpm
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
+      - name: ENGINE
+        value: php-fpm
+- name: fatfree
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/fatfree','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: fatfree
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/fatfree/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/fatfree/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: hamlet
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/hamlet','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: hamlet
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/hamlet/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/hamlet/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: hyperf
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/hyperf','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: hyperf
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/hyperf/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/hyperf/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: ice
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/ice','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: ice
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/ice/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/ice/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: imi
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/imi','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: imi
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/imi/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/imi/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: laminas
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/laminas','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: laminas
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/laminas/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/laminas/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: laravel
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/laravel','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: laravel
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/laravel/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/laravel/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: swoole
+      commands:
+      - make  -f php/laravel/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/laravel/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: lumen
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/lumen','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: lumen
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/lumen/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/lumen/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: swoole
+      commands:
+      - make  -f php/lumen/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/lumen/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: mark
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/mark','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: mark
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: workerman
+      commands:
+      - make  -f php/mark/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/mark/.Makefile collect.workerman
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: workerman
+- name: mezzio
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/mezzio','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: mezzio
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/mezzio/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/mezzio/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: nano
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/nano','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: nano
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: workerman
+      commands:
+      - make  -f php/nano/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/nano/.Makefile collect.workerman
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: workerman
+- name: nette
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/nette','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: nette
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/nette/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/nette/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: one
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/one','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: one
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/one/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/one/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: swoole
+      commands:
+      - make  -f php/one/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/one/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: phalcon
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/phalcon','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: phalcon
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/phalcon/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/phalcon/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: siler
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/siler','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: siler
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/siler/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/siler/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: swoole
+      commands:
+      - make  -f php/siler/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/siler/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: simps
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/simps','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: simps
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/simps/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/simps/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: slim
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/slim','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: slim
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/slim/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/slim/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: swoole
+      commands:
+      - make  -f php/slim/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/slim/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+    - name: road-runner
+      commands:
+      - make  -f php/slim/.Makefile build.road-runner
+      - bundle exec rspec .spec
+      - make  -f php/slim/.Makefile collect.road-runner
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: road-runner
+- name: spiral
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/spiral','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: spiral
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: road-runner
+      commands:
+      - make  -f php/spiral/.Makefile build.road-runner
+      - bundle exec rspec .spec
+      - make  -f php/spiral/.Makefile collect.road-runner
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: road-runner
+- name: sunrise-router
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/sunrise-router','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: sunrise-router
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/sunrise-router/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/sunrise-router/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: road-runner
+      commands:
+      - make  -f php/sunrise-router/.Makefile build.road-runner
+      - bundle exec rspec .spec
+      - make  -f php/sunrise-router/.Makefile collect.road-runner
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: road-runner
+- name: sunrise-router-annotations
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/sunrise-router-annotations','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: sunrise-router-annotations
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/sunrise-router-annotations/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/sunrise-router-annotations/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: sw-fw-less
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/sw-fw-less','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: sw-fw-less
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/sw-fw-less/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/sw-fw-less/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: swoft
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/swoft','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: swoft
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/swoft/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/swoft/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: swoole
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/swoole','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: swoole
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/swoole/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/swoole/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: swoole-coroutine
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/swoole-coroutine','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: swoole-coroutine
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: swoole
+      commands:
+      - make  -f php/swoole-coroutine/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/swoole-coroutine/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
+- name: symfony
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/symfony','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: symfony
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/symfony/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/symfony/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: ubiquity
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/ubiquity','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: ubiquity
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/ubiquity/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/ubiquity/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: unic
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/unic','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: unic
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/unic/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/unic/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+- name: webman
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/webman','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: webman
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: workerman
+      commands:
+      - make  -f php/webman/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/webman/.Makefile collect.workerman
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: workerman
+- name: workerman
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/workerman','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: workerman
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: workerman
+      commands:
+      - make  -f php/workerman/.Makefile build.workerman
+      - bundle exec rspec .spec
+      - make  -f php/workerman/.Makefile collect.workerman
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: workerman
+- name: yii
+  dependencies:
+  - php
+  run:
+    when: change_in('/php/yii','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: php
+    - name: FRAMEWORK
+      value: yii
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: php-fpm
+      commands:
+      - make  -f php/yii/.Makefile build.php-fpm
+      - bundle exec rspec .spec
+      - make  -f php/yii/.Makefile collect.php-fpm
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: php-fpm
+    - name: swoole
+      commands:
+      - make  -f php/yii/.Makefile build.swoole
+      - bundle exec rspec .spec
+      - make  -f php/yii/.Makefile collect.swoole
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: swoole
 - name: ruby
   dependencies:
   - setup
   run:
-    when: change_in(['/ruby/','/data.json'])
+    when: change_in('/ruby/','/data.json')
   task:
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: setup
+      commands:
+      - checkout
+- name: agoo
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/agoo','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: agoo
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -3507,175 +2355,24 @@ blocks:
     jobs:
     - name: agoo
       commands:
-      - cd ruby/agoo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/agoo bundle exec rspec .spec
-      - make  -f ruby/agoo/.Makefile collect
+      - make  -f ruby/agoo/.Makefile build.agoo
+      - bundle exec rspec .spec
+      - make  -f ruby/agoo/.Makefile collect.agoo
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: camping
-      commands:
-      - cd ruby/camping && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/camping bundle exec rspec .spec
-      - make  -f ruby/camping/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: cuba
-      commands:
-      - cd ruby/cuba && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/cuba bundle exec rspec .spec
-      - make  -f ruby/cuba/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: grape
-      commands:
-      - cd ruby/grape && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/grape bundle exec rspec .spec
-      - make  -f ruby/grape/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: hanami-api
-      commands:
-      - cd ruby/hanami-api && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/hanami-api bundle exec rspec .spec
-      - make  -f ruby/hanami-api/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rack-routing
-      commands:
-      - cd ruby/rack-routing && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/rack-routing bundle exec rspec .spec
-      - make  -f ruby/rack-routing/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rack_app
-      commands:
-      - cd ruby/rack_app && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/rack_app bundle exec rspec .spec
-      - make  -f ruby/rack_app/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: rails
-      commands:
-      - cd ruby/rails && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/rails bundle exec rspec .spec
-      - make  -f ruby/rails/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: roda
-      commands:
-      - cd ruby/roda && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/roda bundle exec rspec .spec
-      - make  -f ruby/roda/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: sinatra
-      commands:
-      - cd ruby/sinatra && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/sinatra bundle exec rspec .spec
-      - make  -f ruby/sinatra/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: syro
-      commands:
-      - cd ruby/syro && make build  -f .Makefile  && cd -
-      - FRAMEWORK=ruby/syro bundle exec rspec .spec
-      - make  -f ruby/syro/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: rust
+      - name: ENGINE
+        value: agoo
+- name: camping
   dependencies:
-  - setup
+  - ruby
   run:
-    when: change_in(['/rust/','/data.json'])
+    when: change_in('/ruby/camping','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: camping
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -3690,87 +2387,44 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: actix
+    - name: puma
       commands:
-      - cd rust/actix && make build  -f .Makefile  && cd -
-      - FRAMEWORK=rust/actix bundle exec rspec .spec
-      - make  -f rust/actix/.Makefile collect
+      - make  -f ruby/camping/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/camping/.Makefile collect.puma
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: gotham
+      - name: ENGINE
+        value: puma
+    - name: iodine
       commands:
-      - cd rust/gotham && make build  -f .Makefile  && cd -
-      - FRAMEWORK=rust/gotham bundle exec rspec .spec
-      - make  -f rust/gotham/.Makefile collect
+      - make  -f ruby/camping/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/camping/.Makefile collect.iodine
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: iron
+      - name: ENGINE
+        value: iodine
+    - name: falcon
       commands:
-      - cd rust/iron && make build  -f .Makefile  && cd -
-      - FRAMEWORK=rust/iron bundle exec rspec .spec
-      - make  -f rust/iron/.Makefile collect
+      - make  -f ruby/camping/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/camping/.Makefile collect.falcon
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: nickel
-      commands:
-      - cd rust/nickel && make build  -f .Makefile  && cd -
-      - FRAMEWORK=rust/nickel bundle exec rspec .spec
-      - make  -f rust/nickel/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: salvo
-      commands:
-      - cd rust/salvo && make build  -f .Makefile  && cd -
-      - FRAMEWORK=rust/salvo bundle exec rspec .spec
-      - make  -f rust/salvo/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: scala
+      - name: ENGINE
+        value: falcon
+- name: cuba
   dependencies:
-  - setup
+  - ruby
   run:
-    when: change_in(['/scala/','/data.json'])
+    when: change_in('/ruby/cuba','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: cuba
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -3785,87 +2439,44 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: akkahttp
+    - name: puma
       commands:
-      - cd scala/akkahttp && make build  -f .Makefile  && cd -
-      - FRAMEWORK=scala/akkahttp bundle exec rspec .spec
-      - make  -f scala/akkahttp/.Makefile collect
+      - make  -f ruby/cuba/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/cuba/.Makefile collect.puma
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: finatra
+      - name: ENGINE
+        value: puma
+    - name: iodine
       commands:
-      - cd scala/finatra && make build  -f .Makefile  && cd -
-      - FRAMEWORK=scala/finatra bundle exec rspec .spec
-      - make  -f scala/finatra/.Makefile collect
+      - make  -f ruby/cuba/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/cuba/.Makefile collect.iodine
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: finch
+      - name: ENGINE
+        value: iodine
+    - name: falcon
       commands:
-      - cd scala/finch && make build  -f .Makefile  && cd -
-      - FRAMEWORK=scala/finch bundle exec rspec .spec
-      - make  -f scala/finch/.Makefile collect
+      - make  -f ruby/cuba/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/cuba/.Makefile collect.falcon
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: http4s
-      commands:
-      - cd scala/http4s && make build  -f .Makefile  && cd -
-      - FRAMEWORK=scala/http4s bundle exec rspec .spec
-      - make  -f scala/http4s/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: play
-      commands:
-      - cd scala/play && make build  -f .Makefile  && cd -
-      - FRAMEWORK=scala/play bundle exec rspec .spec
-      - make  -f scala/play/.Makefile collect
-      - bundle exec rake db:raw_export
-      env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-- name: swift
+      - name: ENGINE
+        value: falcon
+- name: grape
   dependencies:
-  - setup
+  - ruby
   run:
-    when: change_in(['/swift/','/data.json'])
+    when: change_in('/ruby/grape','data.json')
   task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: grape
     prologue:
       commands:
       - cache restore $SEMAPHORE_GIT_SHA
@@ -3880,93 +2491,394 @@ blocks:
       - bundle install
       - bundle exec rake config
     jobs:
-    - name: hummingbird-framework
+    - name: puma
       commands:
-      - cd swift/hummingbird-framework && make build  -f .Makefile  && cd -
-      - FRAMEWORK=swift/hummingbird-framework bundle exec rspec .spec
-      - make  -f swift/hummingbird-framework/.Makefile collect
+      - make  -f ruby/grape/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/grape/.Makefile collect.puma
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: kitura
+      - name: ENGINE
+        value: puma
+    - name: iodine
       commands:
-      - cd swift/kitura && make build  -f .Makefile  && cd -
-      - FRAMEWORK=swift/kitura bundle exec rspec .spec
-      - make  -f swift/kitura/.Makefile collect
+      - make  -f ruby/grape/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/grape/.Makefile collect.iodine
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: kitura-nio
+      - name: ENGINE
+        value: iodine
+    - name: falcon
       commands:
-      - cd swift/kitura-nio && make build  -f .Makefile  && cd -
-      - FRAMEWORK=swift/kitura-nio bundle exec rspec .spec
-      - make  -f swift/kitura-nio/.Makefile collect
+      - make  -f ruby/grape/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/grape/.Makefile collect.falcon
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: perfect
+      - name: ENGINE
+        value: falcon
+- name: hanami-api
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/hanami-api','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: hanami-api
+    prologue:
       commands:
-      - cd swift/perfect && make build  -f .Makefile  && cd -
-      - FRAMEWORK=swift/perfect bundle exec rspec .spec
-      - make  -f swift/perfect/.Makefile collect
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/hanami-api/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/hanami-api/.Makefile collect.puma
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: swifter-framework
+      - name: ENGINE
+        value: puma
+    - name: iodine
       commands:
-      - cd swift/swifter-framework && make build  -f .Makefile  && cd -
-      - FRAMEWORK=swift/swifter-framework bundle exec rspec .spec
-      - make  -f swift/swifter-framework/.Makefile collect
+      - make  -f ruby/hanami-api/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/hanami-api/.Makefile collect.iodine
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
-    - name: vapor-framework
+      - name: ENGINE
+        value: iodine
+    - name: falcon
       commands:
-      - cd swift/vapor-framework && make build  -f .Makefile  && cd -
-      - FRAMEWORK=swift/vapor-framework bundle exec rspec .spec
-      - make  -f swift/vapor-framework/.Makefile collect
+      - make  -f ruby/hanami-api/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/hanami-api/.Makefile collect.falcon
       - bundle exec rake db:raw_export
       env_vars:
-      - name: DATABASE_URL
-        value: postgresql://postgres@0.0.0.0/benchmark
-      - name: DURATION
-        value: '10'
-      - name: CONCURRENCIES
-        value: '64'
-      - name: ROUTES
-        value: GET:/
+      - name: ENGINE
+        value: falcon
+- name: rack-routing
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/rack-routing','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: rack-routing
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/rack-routing/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/rack-routing/.Makefile collect.puma
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: puma
+    - name: iodine
+      commands:
+      - make  -f ruby/rack-routing/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/rack-routing/.Makefile collect.iodine
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: iodine
+    - name: falcon
+      commands:
+      - make  -f ruby/rack-routing/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/rack-routing/.Makefile collect.falcon
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: falcon
+- name: rack_app
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/rack_app','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: rack_app
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/rack_app/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/rack_app/.Makefile collect.puma
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: puma
+    - name: iodine
+      commands:
+      - make  -f ruby/rack_app/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/rack_app/.Makefile collect.iodine
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: iodine
+    - name: falcon
+      commands:
+      - make  -f ruby/rack_app/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/rack_app/.Makefile collect.falcon
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: falcon
+- name: rails
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/rails','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: rails
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/rails/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/rails/.Makefile collect.puma
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: puma
+    - name: iodine
+      commands:
+      - make  -f ruby/rails/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/rails/.Makefile collect.iodine
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: iodine
+    - name: falcon
+      commands:
+      - make  -f ruby/rails/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/rails/.Makefile collect.falcon
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: falcon
+- name: roda
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/roda','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: roda
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/roda/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/roda/.Makefile collect.puma
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: puma
+    - name: iodine
+      commands:
+      - make  -f ruby/roda/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/roda/.Makefile collect.iodine
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: iodine
+    - name: falcon
+      commands:
+      - make  -f ruby/roda/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/roda/.Makefile collect.falcon
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: falcon
+- name: sinatra
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/sinatra','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: sinatra
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/sinatra/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/sinatra/.Makefile collect.puma
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: puma
+    - name: iodine
+      commands:
+      - make  -f ruby/sinatra/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/sinatra/.Makefile collect.iodine
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: iodine
+    - name: falcon
+      commands:
+      - make  -f ruby/sinatra/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/sinatra/.Makefile collect.falcon
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: falcon
+- name: syro
+  dependencies:
+  - ruby
+  run:
+    when: change_in('/ruby/syro','data.json')
+  task:
+    env_vars:
+    - name: LANGUAGE
+      value: ruby
+    - name: FRAMEWORK
+      value: syro
+    prologue:
+      commands:
+      - cache restore $SEMAPHORE_GIT_SHA
+      - cache restore wrk
+      - sudo install wrk /usr/local/bin
+      - cache restore bin
+      - cache restore built-in
+      - sem-service start postgres
+      - createdb -U postgres -h 0.0.0.0 benchmark
+      - psql -U postgres -h 0.0.0.0 -d benchmark < dump.sql
+      - bundle config path .cache
+      - bundle install
+      - bundle exec rake config
+    jobs:
+    - name: puma
+      commands:
+      - make  -f ruby/syro/.Makefile build.puma
+      - bundle exec rspec .spec
+      - make  -f ruby/syro/.Makefile collect.puma
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: puma
+    - name: iodine
+      commands:
+      - make  -f ruby/syro/.Makefile build.iodine
+      - bundle exec rspec .spec
+      - make  -f ruby/syro/.Makefile collect.iodine
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: iodine
+    - name: falcon
+      commands:
+      - make  -f ruby/syro/.Makefile build.falcon
+      - bundle exec rspec .spec
+      - make  -f ruby/syro/.Makefile collect.falcon
+      - bundle exec rake db:raw_export
+      env_vars:
+      - name: ENGINE
+        value: falcon

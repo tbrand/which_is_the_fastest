@@ -2,8 +2,5 @@ framework:
   website: sifrr.github.io/sifrr/#/./packages/server/sifrr-server/
   version: 0.0
 
-build_deps:
-  - git
-
-bin_deps:
-  - gcompat # required by uWebSocket
+  engines:
+    - uwebsockets

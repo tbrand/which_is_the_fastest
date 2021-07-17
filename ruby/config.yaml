@@ -1,3 +1,28 @@
-provider:
-  default:
-    language: 3.0
+language:
+  version: 3.0
+
+  engines:
+    puma:
+      command: bundle exec puma -p 3000 -w $(nproc)
+    falcon:
+      command: bundle exec falcon serve --bind http://0.0.0.0:3000 --count $(nproc)
+    iodine:
+      command: bundle exec iodine -p 3000 -w $(nproc)
+    agoo:
+      command: bundler exec ruby app.rb
+
+framework:
+  engines:
+    - puma
+    - iodine
+    - falcon
+
+  files:
+    - "**/*.rb"
+    - config/*.yml
+    - Gemfile
+    - Rakefile
+    - config.ru
+
+  environment:
+    RACK_ENV: production

@@ -1,3 +1,11 @@
 framework:
   github: georgeu2000/rack-routing
   version: 0.0
+
+  files:
+    - "**/*.rb"
+    - config/*.yml
+    - Gemfile
+    - Rakefile
+    - config.ru
+    - config/routes.txt

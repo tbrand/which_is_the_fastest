@@ -2,10 +2,12 @@ framework:
   website: symfony.com
   version: 5.3
 
-deps:
-  - nginx
+  files:
+    - bin/console
+    - config/**/*.yaml
+    - .env.local.php
 
-before_command:
-  - mkdir -p var/log && chown www-data var/log
-  - mkdir -p var/cache && chown www-data var/cache
-  - php bin/console cache:warmup --no-debug
+  bootstrap:
+    - mkdir -p var/log && chown www-data var/log
+    - mkdir -p var/cache && chown www-data var/cache
+    - php bin/console cache:warmup --no-debug

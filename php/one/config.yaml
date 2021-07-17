@@ -2,10 +2,27 @@ framework:
   github: lizhichao/one
   version: 2.2
 
-php_mod:
-  - bcmath
+  engines:
+    - php-fpm
+    - swoole
 
-php_ext:
-  - swoole
+  modules:
+    - bcmath
 
-command: php App/swoole.php
+language:
+  engines:
+    swoole:
+      command: php App/swoole.php
+    php-fpm:
+      files:
+        - .php-fpm/App/Config/cache.php
+        - .php-fpm/App/Config/config.php
+        - .php-fpm/App/Config/crypt.php
+        - .php-fpm/App/Config/exception.php
+        - .php-fpm/App/Config/log.php
+        - .php-fpm/App/index.php
+        - .php-fpm/App/config.php
+        - .php-fpm/public/index.php
+      bootstrap:
+        - mkdir -p App/RunCache
+        - chmod 777 App/RunCache

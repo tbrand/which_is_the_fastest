@@ -6,27 +6,25 @@ RUN docker-php-ext-install zip opcache
 WORKDIR /usr/src/app
 
 {{#environment}}
-ENV {{{.}}}
+  ENV {{{.}}}
 {{/environment}}
 
-{{#build_deps}}
-  RUN apk add {{{.}}}
-{{/build_deps}}
-
-{{#php_mod}}
+{{#modules}}
   RUN docker-php-ext-install {{{.}}}
-{{/php_mod}}
+{{/modules}}
 
-{{#php_ext}}
+{{#extensions}}
   RUN pecl install {{{.}}}
   RUN docker-php-ext-enable {{{.}}}
-{{/php_ext}}
+{{/extensions}}
 
-{{#before_build}}
+{{#files}}
+  COPY {{source}} {{target}}
+{{/files}}
+
+{{#bootstrap}}
   RUN {{{.}}}
-{{/before_build}}
-
-COPY . ./
+{{/bootstrap}}
 
 ENV EVENT_EXT_FILE /usr/local/etc/php/conf.d/docker-php-ext-event.ini
 RUN if [[ -f "${EVENT_EXT_FILE}" ]] ; then \
@@ -34,17 +32,9 @@ RUN if [[ -f "${EVENT_EXT_FILE}" ]] ; then \
   sed -e '1i extension=sockets' /usr/local/etc/php/conf.d/docker-php-ext-event.ini > /tmp/file ; \
   mv /tmp/file /usr/local/etc/php/conf.d/docker-php-ext-event.ini ; fi
 
-{{^standalone}}
-RUN curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --prefer-dist --classmap-authoritative
-RUN composer dumpautoload -o
-{{/standalone}}
 
 
 
-{{#before_command}}
-  RUN {{{.}}}
-{{/before_command}}
 
 {{#command}}
   CMD {{{.}}}

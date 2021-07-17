@@ -2,8 +2,14 @@ framework:
   github: spiral/framework
   version: 2.8
 
-before_command:
-  - vendor/bin/spiral get
-  - php app.php configure
+  files:
+    - .rr.yaml
 
-command: ./spiral serve
+  engines:
+    - road-runner
+
+  bootstrap:
+    - vendor/bin/spiral get
+    - php public/index.php configure
+
+  command: ./spiral serve

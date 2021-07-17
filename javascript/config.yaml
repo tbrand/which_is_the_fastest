@@ -1,3 +1,38 @@
-provider:
-  default:
-    language: 14.16
+language:
+  version: ES2019
+
+  engines:
+    node:
+      environment:
+        NODE_ENV: production
+      bootstrap:
+        - npm -g install pm2
+        - npm install
+      command: pm2-runtime start app.js -i $(nproc)
+    turbo-net:
+      environment:
+        NODE_ENV: production
+      bootstrap:
+        - npm -g install pm2
+        - npm install
+      command: pm2-runtime start app.js -i $(nproc)
+    uwebsockets:
+      deps:
+        - git
+        - gcompat # required by uWebSocket
+      environment:
+        NODE_ENV: production
+        EXPERIMENTAL_FASTCALL: 1
+      bootstrap:
+        - npm -g install pm2
+        - npm install
+      command: pm2-runtime start app.js -i $(nproc)
+
+framework:
+  engines:
+    - node
+
+  files:
+    - "**/*.js"
+    - "**/*.ts"
+    - "**/*.json"

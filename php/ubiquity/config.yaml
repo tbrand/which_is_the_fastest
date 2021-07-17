@@ -2,24 +2,24 @@ framework:
   website: ubiquity.kobject.net
   version: 2.3
 
-before_command:
-  - composer update
-  - chmod +x vendor/bin/Ubiquity
-  - mkdir .ubiquity
-  - mkdir app/cache -p
-  - ./vendor/bin/Ubiquity bootstrap prod
-  - mkdir -p public
+  bootstrap:
+    - composer update
+    - chmod +x vendor/bin/Ubiquity
+    - mkdir .ubiquity
+    - mkdir app/cache -p
+    - ./vendor/bin/Ubiquity bootstrap prod
+    - mkdir -p public
 
-docroot: /usr/src/app
+  docroot: /usr/src/app
 
-nginx_conf:
-  - |
-    location /{\n\
-        rewrite ^/(.*)$ /index.php?c=$1 last;\n\
-    }\n\
-  - |
-    location = /index.php {\n\
-      fastcgi_pass unix:/var/run/php-fpm.sock;\n\
-      fastcgi_param   SCRIPT_FILENAME         $document_root/index.php;\n\
-      include fastcgi_params;\n\
-    }\n\
+  nginx_conf:
+    - |
+      location /{\n\
+          rewrite ^/(.*)$ /index.php?c=$1 last;\n\
+      }\n\
+    - |
+      location = /index.php {\n\
+        fastcgi_pass unix:/var/run/php-fpm.sock;\n\
+        fastcgi_param   SCRIPT_FILENAME         $document_root/index.php;\n\
+        include fastcgi_params;\n\
+      }\n\

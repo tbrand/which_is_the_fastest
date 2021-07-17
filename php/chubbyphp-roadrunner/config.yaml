@@ -1,8 +1,0 @@
-framework:
-  github: chubbyphp/chubbyphp-framework
-  version: 3.5
-
-before_command:
-  - vendor/bin/rr get-binary
-
-command: ./rr serve

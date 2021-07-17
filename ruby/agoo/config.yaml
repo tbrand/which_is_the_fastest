@@ -2,7 +2,9 @@ framework:
   github: ohler55/agoo
   version: 2.14
 
-environment:
-  AGOO_WORKER_COUNT: $(nproc)
+  engines:
+    - agoo
 
-command: ruby app.rb
+  environment:
+    RACK_ENV: production
+    AGOO_WORKER_COUNT: $(nproc)

@@ -2,11 +2,11 @@ framework:
   github: driftphp/driftphp
   version: 0.1
 
-build_deps:
-  - libevent-dev
+  files:
+    - bin/server
+    - Drift/config/**/*.yml
 
-php_mod:
-  - pcntl
-  - sockets
+  engines:
+    - reactphp
 
-command: php vendor/bin/server run 0.0.0.0:3000 --env=prod --quiet --workers=-1
+  command: php vendor/bin/server run 0.0.0.0:3000 --env=prod --quiet --workers=-1

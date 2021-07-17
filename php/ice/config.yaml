@@ -2,24 +2,24 @@ framework:
   website: iceframework.org
   version: 1.8
 
-build_deps:
-  - bash
-  - libexecinfo-dev
+  deps:
+    - bash
+    - libexecinfo-dev
 
-environment:
-  LDFLAGS: -lexecinfo
+  environment:
+    LDFLAGS: -lexecinfo
 
-php_ext:
-  - ice
+  extensions:
+    - ice
 
-nginx_conf:
-  - |
-    location /{\n\
-        rewrite ^/(.*)$ /index.php?_url=/$1 last;\n\
-    }\n\
-  - |
-    location = /index.php {\n\
-      fastcgi_pass unix:/var/run/php-fpm.sock;\n\
-      fastcgi_param   SCRIPT_FILENAME         $document_root/index.php;\n\
-      include fastcgi_params;\n\
-    }\n\
+  nginx_conf:
+    - |
+      location /{\n\
+          rewrite ^/(.*)$ /index.php?_url=/$1 last;\n\
+      }\n\
+    - |
+      location = /index.php {\n\
+        fastcgi_pass unix:/var/run/php-fpm.sock;\n\
+        fastcgi_param   SCRIPT_FILENAME         $document_root/index.php;\n\
+        include fastcgi_params;\n\
+      }\n\
