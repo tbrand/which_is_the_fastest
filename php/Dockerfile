@@ -1,3 +1,9 @@
+{{#php_ext}}
+  FROM php:7.4-fpm-alpine AS {{{.}}}
+  RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS}
+  RUN pecl install {{{.}}}
+{{/php_ext}}
+
 FROM php:7.4-fpm-alpine
 
 RUN apk add git zlib-dev libzip-dev build-base autoconf nginx openrc curl-dev icu-dev oniguruma-dev {{#deps}} {{{.}}} {{/deps}}
@@ -17,10 +23,7 @@ ENV {{{.}}}
   RUN docker-php-ext-install {{{.}}}
 {{/php_mod}}
 
-{{#php_ext}}
-  RUN pecl install {{{.}}}
-  RUN docker-php-ext-enable {{{.}}}
-{{/php_ext}}
+
 
 {{#before_build}}
   RUN {{{.}}}
@@ -33,6 +36,12 @@ RUN if [[ -f "${EVENT_EXT_FILE}" ]] ; then \
   rm -fr /usr/local/etc/php/conf.d/docker-php-ext-sockets.ini ; \
   sed -e '1i extension=sockets' /usr/local/etc/php/conf.d/docker-php-ext-event.ini > /tmp/file ; \
   mv /tmp/file /usr/local/etc/php/conf.d/docker-php-ext-event.ini ; fi
+
+{{#php_ext}}
+  ENV PHP_EXT_DIR /usr/local/lib/php/extensions/no-debug-non-zts-20190902
+  COPY --from={{{.}}} ${PHP_EXT_DIR}/{{{.}}}.so ${PHP_EXT_DIR}/{{{.}}}.so
+  RUN docker-php-ext-enable {{{.}}}
+{{/php_ext}}
 
 {{^standalone}}
 RUN curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
