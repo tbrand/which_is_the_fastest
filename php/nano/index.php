@@ -2,7 +2,7 @@
 
 require_once 'vendor/autoload.php';
 
-use laylatichy\nano\Nano;
+use laylatichy\Nano;
 
 $nano = new Nano();
 

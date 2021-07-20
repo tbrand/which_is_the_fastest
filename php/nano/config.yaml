@@ -1,6 +1,6 @@
 framework:
   gitlab: x.laylatichy.x/nano
-  version: 0.0.9
+  version: 1.0
 
 php_mod:
   - pcntl

@@ -1,9 +1,11 @@
-FROM php:7.4-fpm-alpine
+FROM php:8.0-fpm-alpine
 
-RUN apk add git zlib-dev libzip-dev build-base autoconf nginx openrc curl-dev icu-dev oniguruma-dev {{#deps}} {{{.}}} {{/deps}}
+RUN apk add git zlib-dev libzip-dev build-base autoconf nginx openrc curl-dev icu-dev oniguruma-dev php8-pear {{#deps}} {{{.}}} {{/deps}}
 RUN docker-php-ext-install zip opcache
 
 WORKDIR /usr/src/app
+
+RUN ln -sfv /usr/bin/pecl8 /usr/local/bin/pecl
 
 {{#environment}}
 ENV {{{.}}}
@@ -18,8 +20,9 @@ ENV {{{.}}}
 {{/php_mod}}
 
 {{#php_ext}}
-  RUN pecl install {{{name}}}
-  RUN docker-php-ext-enable {{{extension}}}
+  RUN mkdir -p /usr/src/php/ext/{{{extension}}} && \
+    curl -fsSL https://pecl.php.net/get/{{{extension}}} | tar xvz -C "/usr/src/php/ext/{{{extension}}}" --strip 1
+  RUN docker-php-ext-install {{{extension}}}
 {{/php_ext}}
 
 {{#before_build}}
@@ -35,12 +38,10 @@ RUN if [[ -f "${EVENT_EXT_FILE}" ]] ; then \
   mv /tmp/file /usr/local/etc/php/conf.d/docker-php-ext-event.ini ; fi
 
 {{^standalone}}
-RUN curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install --no-dev --prefer-dist --classmap-authoritative
-RUN composer dumpautoload -o
+  RUN curl -sSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  RUN composer install --no-dev --prefer-dist --classmap-authoritative
+  RUN composer dumpautoload -o
 {{/standalone}}
-
-
 
 {{#before_command}}
   RUN {{{.}}}

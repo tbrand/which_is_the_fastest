@@ -1,8 +1,7 @@
 {
   "require": {
-    "php": "^7.1",
     "ext-json": "*",
-    "ext-swoole": "^4.4.0",
+    "ext-swoole": "*",
     "luoxiaojun/sw-fw-less": "dev-master"
   },
   "suggest": {
