@@ -1,2 +1,2 @@
 Depends:
-  Rserve (>= 1.7-3)
+  Rserve (>= 1.8)
