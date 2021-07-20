@@ -1,6 +1,6 @@
 framework:
   website: starlette.io
-  version: 0.15
+  version: 0.16
 
 command: >
   gunicorn  \
